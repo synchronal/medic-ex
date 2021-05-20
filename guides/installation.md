@@ -4,7 +4,7 @@ Add the following file at `.medic/require.exs`:
 
 ```elixir
 Mix.install([
-  {:medic, github: "geometerio/medic", force: true}
+  {:medic, force: true}
 ])
 ```
 
@@ -99,4 +99,12 @@ For example:
   {Medic.Checks.Postgres, :correct_data_directory?},
   {Medic.Checks.Postgres, :database_exists?, ["apex_dev"]}
 ]
+```
+
+## Using medic from github
+
+```elixir
+Mix.install([
+  {:medic, github: "geometerio/medic", force: true}
+])
 ```

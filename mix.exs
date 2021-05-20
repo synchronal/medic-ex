@@ -6,11 +6,13 @@ defmodule Medic.MixProject do
     [
       app: :medic,
       deps: deps(),
+      description: "Checks for setting up development environments",
       dialyzer: dialyzer(),
       docs: docs(),
       elixir: "~> 1.12",
       homepage_url: "https://github.com/geometerio/medic",
       name: "Medic",
+      package: package(),
       preferred_cli_env: [credo: :test],
       source_url: "https://github.com/geometerio/medic",
       start_permanent: Mix.env() == :prod,
@@ -46,8 +48,17 @@ defmodule Medic.MixProject do
     files = File.ls!("guides") |> Enum.map(&"guides/#{&1}")
 
     [
+      extras: files ++ ["README.md"],
       main: "overview",
-      extras: files ++ ["README.md"]
+      source_ref: "v#{@version}"
+    ]
+  end
+
+  defp package do
+    [
+      licenses: ["MIT"],
+      maintainers: ["Geometer"],
+      links: %{"GitHub" => "https://github.com/geometerio/medic"}
     ]
   end
 end
