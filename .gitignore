@@ -1,0 +1,10 @@
+*.ez
+/_build/
+/.fetch
+/cover/
+/deps/
+/doc/
+/priv/plts/
+/tmp
+erl_crash.dump
+medic-*.tar
