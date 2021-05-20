@@ -7,6 +7,8 @@ Doctor checks for setting up development environments
 This package is intended to be installed in doctor scripts.
 
 ```elixir
-Mix.install([:medic])
+Mix.install([
+  {:medic, github: "geometerio/medic", force: true}
+])
 ```
 
