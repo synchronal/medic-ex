@@ -46,7 +46,7 @@ defmodule Medic.Checks.Postgres do
   def correct_data_directory? do
     {output, 0} = System.cmd("psql", ["-U", "postgres", "-tA", "-c", "SHOW data_directory;"])
 
-    expected_data_dir = Path.expand("../../../priv/postgres/data", __DIR__)
+    expected_data_dir = Path.expand("./priv/postgres/data")
 
     if String.trim(output) == expected_data_dir,
       do: :ok,
