@@ -3,6 +3,7 @@ defmodule Medic.Doctor do
   Checks to ensure that the application can be run for development and tests.
   """
 
+  alias Medic.Check
   alias Medic.Checks
   alias Medic.UI
 
@@ -26,7 +27,7 @@ defmodule Medic.Doctor do
   end
 
   def run([check | rest]) do
-    case run_check(check) do
+    case Check.run(check) do
       :ok ->
         UI.ok()
         run(rest)
@@ -43,19 +44,6 @@ defmodule Medic.Doctor do
 
   def run([]),
     do: IO.puts("")
-
-  def run_check({module, meta_function}),
-    do: run_check({module, meta_function, []})
-
-  def run_check({module, function, args}) do
-    UI.item(
-      module |> Module.split() |> List.last(),
-      function |> to_string() |> String.replace("_", " "),
-      args
-    )
-
-    apply(module, function, args)
-  end
 
   def failed(output, remedy) do
     :ok = clipboard(remedy)
