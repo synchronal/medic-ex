@@ -46,10 +46,12 @@ defmodule Medic.MixProject do
   end
 
   defp docs do
-    files = File.ls!("guides") |> Enum.map(&"guides/#{&1}")
-
     [
-      extras: files ++ ["README.md"],
+      extras: [
+        "guides/overview.md",
+        "guides/installation.md",
+        "README.md"
+      ],
       main: "overview",
       source_ref: "v#{@version}"
     ]
