@@ -10,6 +10,10 @@ defmodule Medic.Checks.Chromedriver do
 
   alias Medic.Etc
 
+  @doc """
+  Checks that chromedriver is installed, and has not been quarantined by the
+  MacOS security sandbox.
+  """
   def unquarantined? do
     with {:ok, path} <- chromedriver_path(),
          {:ok, attrs} <- xattrs(path),
@@ -27,6 +31,9 @@ defmodule Medic.Checks.Chromedriver do
     end
   end
 
+  @doc """
+  Checks that chromedriver matches the installed version of Chrome.
+  """
   def versions_match? do
     with {:ok, chromedriver_path} <- chromedriver_path(),
          chromedriver <- Etc.application_version(chromedriver_path, "-v"),

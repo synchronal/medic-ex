@@ -10,16 +10,24 @@ defmodule Medic.Checks.Postgres do
       {Check.Postgres, :correct_data_directory?},
       {Check.Postgres, :database_exists?, ["my_db"]}
   """
-  def database_exists?(database_name) do
-    {:ok, found_tables} = tables()
 
-    if database_name in found_tables,
+  @doc """
+  Checks that the named database exists in the running Postgres instance.
+
+  ## Usage
+
+      {Medic.Checks.Postgres, :database_exists?, ["my_db_dev"]}
+  """
+  def database_exists?(database_name) do
+    {:ok, found_databases} = databases()
+
+    if database_name in found_databases,
       do: :ok,
-      else: {:error, "#{database_name} not found in #{inspect(found_tables)}", "mix ecto.setup"}
+      else: {:error, "#{database_name} not found in #{inspect(found_databases)}", "mix ecto.setup"}
   end
 
   @doc """
-  Verifies that the running Postgres database matches the version defined
+  Checks that the running Postgres database matches the version defined
   in ASDF's `.tool-versions` file.
   """
   def correct_version_running? do
@@ -35,6 +43,9 @@ defmodule Medic.Checks.Postgres do
       }
   end
 
+  @doc """
+  Checks that a user `postgres` has been created in the running instance.
+  """
   def role_exists? do
     {output, 0} = System.cmd("psql", ["-A", "-c", "\\du", "postgres"])
 
@@ -43,24 +54,38 @@ defmodule Medic.Checks.Postgres do
       else: {:error, "postgres role does not exist", "createuser -s postgres -U \$USER"}
   end
 
-  def correct_data_directory? do
+  @doc """
+  Checks that the running instance of Postgres has the expected data directory.
+  If run with no arguments, this expects that the data directory is located at `.priv/postgres/data`
+  within the current project.
+
+  ## Usage
+
+      {Medic.Checks.Postgres, :correct_data_directory}
+      {Medic.Checks.Postgres, :correct_data_directory, ["/path/to/data/directory"]}
+
+  """
+  def correct_data_directory?(path \\ "./priv/postgres/data") do
     {output, 0} = System.cmd("psql", ["-U", "postgres", "-tA", "-c", "SHOW data_directory;"])
 
-    expected_data_dir = Path.expand("./priv/postgres/data")
+    expected_data_dir = Path.expand(path)
 
     if String.trim(output) == expected_data_dir,
       do: :ok,
-      else: {:error, "expected data directory to be #{expected_data_dir} but it was #{output}", "bin/dev/db-restart"}
+      else: {:error, "expected data directory to be #{expected_data_dir} but it was #{output}", "# start postgres from #{path}"}
   end
 
+  @doc """
+  Checks whether Postgres is running, by attempting to list all databases.
+  """
   def running? do
-    case tables() do
+    case databases() do
       {:ok, _list} -> :ok
-      {:error, output} -> {:error, output, "bin/dev/db-start"}
+      {:error, output} -> {:error, output, "# start postgres"}
     end
   end
 
-  defp tables do
+  def databases do
     case System.cmd("psql", ["-l", "-x"]) do
       {output, 0} ->
         {:ok, Regex.scan(~r"^Name\s+\| (\w+)\s*$"m, output) |> Enum.map(&List.last/1)}

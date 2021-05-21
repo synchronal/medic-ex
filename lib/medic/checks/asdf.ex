@@ -14,9 +14,15 @@ defmodule Medic.Checks.Asdf do
   alias Medic.Cmd
   alias Medic.Etc
 
+  @doc """
+  Checks that ASDF can resolve a version for the declared plugin.
+  """
   def package_installed?(package),
     do: Check.command_succeeds?("asdf", ["where", package], remedy: "asdf install #{package}")
 
+  @doc """
+  Checks that the configured ASDF plugin is installed.
+  """
   def plugin_installed?(plugin),
     do: Check.in_list?(plugin, plugins(), remedy: "asdf plugin add #{plugin}")
 

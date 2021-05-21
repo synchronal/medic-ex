@@ -7,6 +7,10 @@ defmodule Medic.Checks.Hex do
       {Check.Hex, :local_hex?}
       {Check.Hex, :installed?}
   """
+
+  @doc """
+  Checks that hex is installed locally.
+  """
   def local_hex_installed? do
     {output, 0} = System.cmd("mix", ["archive"])
 
@@ -15,6 +19,9 @@ defmodule Medic.Checks.Hex do
       else: {:error, "local hex not installed", "mix local.hex --force"}
   end
 
+  @doc """
+  Checks that all Mix dependencies are installed.
+  """
   def packages_installed? do
     {output, 0} = System.cmd("mix", ["deps"])
 

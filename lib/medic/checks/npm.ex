@@ -5,8 +5,12 @@ defmodule Medic.Checks.NPM do
   ## Examples
 
       {Check.NPM, :exists?}
-      {Check.NPM, :correct_version?, ["7.8.0"]}
+      {Check.NPM, :require_minimum_version, ["7.8.0"]}
       {Check.NPM, :installed?}
+  """
+
+  @doc """
+  Checks the installed version of npm is greater than or equal to the declared version.
   """
   def require_minimum_version(minimum) do
     {version, 0} = System.cmd("npm", ["--version"])
@@ -23,6 +27,9 @@ defmodule Medic.Checks.NPM do
     end
   end
 
+  @doc """
+  Checks that there is an npm executable installed locally.
+  """
   def exists? do
     System.cmd("npm", ["--version"])
     |> case do
@@ -31,6 +38,9 @@ defmodule Medic.Checks.NPM do
     end
   end
 
+  @doc """
+  Checks that the packages declared in assets/package-lock.json are all installed.
+  """
   def all_packages_installed? do
     System.cmd("npm", ["outdated", "--prefix", "assets"])
     |> case do
@@ -46,6 +56,9 @@ defmodule Medic.Checks.NPM do
     end
   end
 
+  @doc """
+  Checks that npm install has been run at least once.
+  """
   def any_packages_installed? do
     System.cmd("npm", ["list", "--prefix", "assets", "--dev"])
     |> case do
