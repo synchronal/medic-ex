@@ -8,6 +8,12 @@ Mix.install([
 ])
 ```
 
+Add the following line to `.gitignore`:
+
+```
+.medic/skipped/
+```
+
 And the following files:
 
 * `bin/dev/doctor`:
