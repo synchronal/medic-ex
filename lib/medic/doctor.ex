@@ -32,12 +32,17 @@ defmodule Medic.Doctor do
         UI.ok()
         run(rest)
 
+      :skipped ->
+        UI.skipped()
+        run(rest)
+
       {:warn, output} ->
         UI.warn(output)
         run(rest)
 
       {:error, output, remedy} ->
-        failed(output, remedy)
+        skipfile = Check.skip_file(check)
+        failed(output, remedy, skipfile)
         System.halt(1)
     end
   end
@@ -45,9 +50,20 @@ defmodule Medic.Doctor do
   def run([]),
     do: IO.puts("")
 
-  def failed(output, remedy) do
+  def failed(output, remedy, skipfile) do
     :ok = clipboard(remedy)
-    UI.failed(output, ["\nPossible remedy: ", :yellow, remedy, :green, "\n(It's in the clipboard)"])
+
+    UI.failed(output, [
+      "\nPossible remedy: ",
+      :yellow,
+      remedy,
+      :green,
+      " (It's in the clipboard)",
+      :cyan,
+      "\nSkip: ",
+      :yellow,
+      "touch #{skipfile}"
+    ])
   end
 
   def clipboard(cmd) do

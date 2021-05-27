@@ -47,11 +47,16 @@ defmodule Medic.Checks.Postgres do
   Checks that a user `postgres` has been created in the running instance.
   """
   def role_exists? do
-    {output, 0} = System.cmd("psql", ["-A", "-c", "\\du", "postgres"])
+    System.cmd("psql", ["-A", "-c", "\\du", "postgres"], stderr_to_stdout: true)
+    |> case do
+      {output, 0} ->
+        if output =~ "postgres",
+          do: :ok,
+          else: {:error, "postgres role does not exist", "createuser -s postgres -U \$USER"}
 
-    if output =~ "postgres",
-      do: :ok,
-      else: {:error, "postgres role does not exist", "createuser -s postgres -U \$USER"}
+      {output, _} ->
+        {:error, output, "# start postgres"}
+    end
   end
 
   @doc """
@@ -66,7 +71,7 @@ defmodule Medic.Checks.Postgres do
 
   """
   def correct_data_directory?(path \\ "./priv/postgres/data") do
-    {output, 0} = System.cmd("psql", ["-U", "postgres", "-tA", "-c", "SHOW data_directory;"])
+    {output, 0} = System.cmd("psql", ["-U", "postgres", "-tA", "-c", "SHOW data_directory;"], stderr_to_stdout: true)
 
     expected_data_dir = Path.expand(path)
 
@@ -86,7 +91,7 @@ defmodule Medic.Checks.Postgres do
   end
 
   def databases do
-    case System.cmd("psql", ["-l", "-x"]) do
+    case System.cmd("psql", ["-l", "-x"], stderr_to_stdout: true) do
       {output, 0} ->
         {:ok, Regex.scan(~r"^Name\s+\| (\w+)\s*$"m, output) |> Enum.map(&List.last/1)}
 
@@ -109,7 +114,7 @@ defmodule Medic.Checks.Postgres do
   end
 
   defp get_running_version do
-    case System.cmd("psql", ["--version"]) do
+    case System.cmd("psql", ["--version"], stderr_to_stdout: true) do
       {output, 0} ->
         output
         |> String.split(" ", trim: true)

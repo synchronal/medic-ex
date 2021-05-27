@@ -3,25 +3,31 @@ defmodule Medic.UI do
 
   def failed(output, message),
     do:
-      [" ", :red, :bright, "FAILED\n\n", :normal, output, :cyan, message, "\n"]
+      [" ", :red, :bright, "FAILED\n\n", :normal, output, :cyan, message, "\n", :normal]
       |> format()
       |> IO.puts()
 
   def heading(message, details \\ nil),
     do:
-      [:green, "▸ ", :bright, :light_cyan, message, details_to_chardata(details), "..."]
+      [:green, "▸ ", :bright, :light_cyan, message, details_to_chardata(details), "...", :normal]
       |> format()
       |> IO.puts()
 
   def item(message, sub_message, details),
     do:
-      [:green, "• ", :cyan, message, ": ", sub_message, details_to_chardata(details)]
+      [:green, "• ", :cyan, message, ": ", sub_message, details_to_chardata(details), :normal]
       |> format()
       |> IO.write()
 
   def ok,
     do:
       [" ", :green, :bright, "OK"]
+      |> format()
+      |> IO.puts()
+
+  def skipped,
+    do:
+      [" ", :yellow, :bright, "SKIPPED"]
       |> format()
       |> IO.puts()
 

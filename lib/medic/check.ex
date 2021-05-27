@@ -15,7 +15,11 @@ defmodule Medic.Check do
       args
     )
 
-    apply(module, function, args)
+    if skipped?(module, function, args) do
+      :skipped
+    else
+      apply(module, function, args)
+    end
   end
 
   @doc """
@@ -33,4 +37,27 @@ defmodule Medic.Check do
 
   def in_list?(item, list, remedy: remedy),
     do: if(item in list, do: :ok, else: {:error, "“#{item}” not found in #{inspect(list)}", remedy})
+
+  def skipped?(module, function, args),
+    do:
+      {module, function, args}
+      |> skip_file()
+      |> File.exists?()
+
+  def skip_file({module, function}), do: skip_file({module, function, []})
+
+  def skip_file({module, function, args}) do
+    arg_list = args |> Enum.join("+")
+
+    filename =
+      [module, function, arg_list]
+      |> Enum.filter(fn
+        "" -> false
+        _ -> true
+      end)
+      |> Enum.join("-")
+      |> String.replace(~r{[^\w\-_\+\.]+}, "")
+
+    Path.join(".medic/skipped", filename)
+  end
 end
