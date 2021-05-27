@@ -3,7 +3,7 @@ defmodule Medic.Checks do
 
   @checks_dir ".medic/checks"
 
-  def load_local_files() do
+  def load_local_files do
     with :ok <- checks_dir_exists?(),
          {:ok, files} <- File.ls(@checks_dir) do
       for file <- files do

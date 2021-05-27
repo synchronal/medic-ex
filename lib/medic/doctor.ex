@@ -92,7 +92,7 @@ defmodule Medic.Doctor do
     Inspect.Algebra.format(doc, :infinity)
   end
 
-  defp load_doctor_file() do
+  defp load_doctor_file do
     if File.exists?(".doctor.exs") do
       Code.eval_file(".doctor.exs")
       |> case do
