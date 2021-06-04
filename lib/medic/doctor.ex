@@ -93,11 +93,11 @@ defmodule Medic.Doctor do
   end
 
   defp load_doctor_file do
-    if File.exists?(".doctor.exs") do
-      Code.eval_file(".doctor.exs")
+    if File.exists?(".medic/doctor.exs") do
+      Code.eval_file(".medic/doctor.exs")
       |> case do
         {checks, []} -> checks
-        _ -> raise "Expected .doctor.exs to be a list of check tuples."
+        _ -> raise "Expected .medic/doctor.exs to be a list of check tuples."
       end
     else
       @default_checks

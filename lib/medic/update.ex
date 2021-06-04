@@ -7,8 +7,8 @@ defmodule Medic.Update do
 
   @documentation_url "https://hexdocs.pm/medic/installation.html#configure-update-commands"
 
-  @doc "Runs the commands listed in `.medic.update.exs`. See module docs for more info."
-  def run(), do: read_commands() |> Enum.each(&run_command/1)
+  @doc "Runs the commands listed in `.medic/update.exs`. See module docs for more info."
+  def run, do: read_commands() |> Enum.each(&run_command/1)
 
   defp run_command(:update_code), do: run_command(["Updating code", "git", ["pull", "--rebase"]])
   defp run_command(:update_mix), do: run_command(["Updating mix deps", "mix", ["deps.get"], [env: [{"MIX_QUIET", "true"}]]])
@@ -19,14 +19,14 @@ defmodule Medic.Update do
   defp run_command([description, command, args]), do: Medic.Cmd.run!(description, command, args)
   defp run_command([description, command, args, opts]), do: Medic.Cmd.run!(description, command, args, opts)
 
-  defp read_commands() do
-    if File.exists?(".medic.update.exs") do
-      case Code.eval_file(".medic.update.exs") do
+  defp read_commands do
+    if File.exists?(".medic/update.exs") do
+      case Code.eval_file(".medic/update.exs") do
         {commands, []} when is_list(commands) -> commands
-        _ -> raise "Expected `.medic.update.exs` to be a list of commands. See #{@documentation_url}"
+        _ -> raise "Expected `.medic/update.exs` to be a list of commands. See #{@documentation_url}"
       end
     else
-      raise "File `.medic.update.exs` not found. See #{@documentation_url}"
+      raise "File `.medic/update.exs` not found. See #{@documentation_url}"
     end
   end
 end

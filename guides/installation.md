@@ -25,11 +25,7 @@ And the following files:
   set -u
   set -o pipefail
 
-  source "bin/dev/_support/doctor.sh"
-
-  if [[ ! -f .doctor.skip ]]; then
-    touch .doctor.skip
-  fi
+  source ".medic/_support/doctor.sh"
 
   # run doctor in home directory if present
   if [[ -f "${HOME}/bin/dev/doctor" ]]; then
@@ -84,7 +80,7 @@ And the following files:
 ## Configure Doctor checks
 
 Doctor defaults to a subset of available checks. The set of checks to run
-can be configured in `.doctor.exs`. If this file exists, it should be a
+can be configured in `.medic/doctor.exs`. If this file exists, it should be a
 list of check tuples.
 
 For example:
@@ -114,7 +110,7 @@ For example:
 
 ## Configure Update commands
 
-Commands are read from `.medic.update.exs` in your project, which should
+Commands are read from `.medic/update.exs` in your project, which should
 contain a list of commands.
 
 ### Recommended Update configuration
@@ -125,7 +121,7 @@ This is the recommended list of commands for a database-backed Phoenix app (in t
 [:update_code, :update_mix, :update_npm, :build_npm, :migrate, :doctor]
 ```
 
-When creating a new project, just copy the line above into `.medic.update.exs`
+When creating a new project, just copy the line above into `.medic/update.exs`
 in your project.
 
 ### Built-in Update commands
@@ -145,7 +141,7 @@ A custom command is a list with 3 or 4 items: a description, a shell command, ar
 and an optional list of opts that will be sent to `System.cmd/3`.
 For example: `["Seeding DB", "mix", ["run", "priv/repo/seeds.exs"]]`
 
-Your `.medic.update.exs` file can have a combination of built-in commands and custom commands:
+Your `.medic/update.exs` file can have a combination of built-in commands and custom commands:
 
 ```elixir
 [

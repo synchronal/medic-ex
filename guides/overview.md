@@ -40,7 +40,7 @@ defmodule Local.Checks.LocalCheck do
 end
 ```
 
-Then it can be added to `.doctor.exs`:
+Then it can be added to `.medic/doctor.exs`:
 
 ```elixir
 [

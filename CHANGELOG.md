@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.0
+
+- [breaking change] Medic looks for files at:
+  
+  * `.medic/doctor.exs`
+  * `.medic/update.exs`
+  
+  See docs at https://hexdocs.pm/medic/Medic.Update.html
+
 ## 0.4.0
 
 - [breaking change] `Medic.Update` now requires `.medic.update.exs` config file.
