@@ -142,7 +142,7 @@ The following commands are built in and can be specified as atoms:
 ### Custom Update commands
 
 A custom command is a list with 3 or 4 items: a description, a shell command, arguments,
-and an optional list of opts that will be sent to `System.cmd/4`.
+and an optional list of opts that will be sent to `System.cmd/3`.
 For example: `["Seeding DB", "mix", ["run", "priv/repo/seeds.exs"]]`
 
 Your `.medic.update.exs` file can have a combination of built-in commands and custom commands:
