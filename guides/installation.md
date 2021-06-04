@@ -16,7 +16,8 @@ Add the following line to `.gitignore`:
 
 And the following files:
 
-* `bin/dev/doctor`:
+- `bin/dev/doctor`:
+
   ```bash
   #!/usr/bin/env bash
 
@@ -59,13 +60,17 @@ And the following files:
 
   elixir -r .medic/require.exs -e "Medic.Doctor.run()" $*
   ```
-* `bin/dev/test`:
+
+- `bin/dev/test`:
+
   ```bash
   #!/bin/bash
 
   elixir -r .medic/require.exs -e "Medic.Test.run()" $*
   ```
-* `bin/dev/update`:
+
+- `bin/dev/update`:
+
   ```bash
   #!/usr/bin/env bash
 
@@ -76,7 +81,7 @@ And the following files:
   elixir -r .medic/require.exs -e "Medic.Update.run()" $*
   ```
 
-## Configure checks
+## Configure Doctor checks
 
 Doctor defaults to a subset of available checks. The set of checks to run
 can be configured in `.doctor.exs`. If this file exists, it should be a
@@ -107,6 +112,53 @@ For example:
 ]
 ```
 
+## Configure Update commands
+
+Commands are read from `.medic.update.exs` in your project, which should
+contain a list of commands.
+
+### Recommended Update configuration
+
+This is the recommended list of commands for a database-backed Phoenix app (in this order):
+
+```elixir
+[:update_code, :update_mix, :update_npm, :build_npm, :migrate, :doctor]
+```
+
+When creating a new project, just copy the line above into `.medic.update.exs`
+in your project.
+
+### Built-in Update commands
+
+The following commands are built in and can be specified as atoms:
+
+- `update_code`: performs `git pull --rebase`
+- `update_mix`: performs `mix deps.get`
+- `update_npm`: performs `npm install --prefix assets`
+- `build_npm`: performs `npm run build --prefix assets`
+- `migrate`: performs `mix ecto.migrate`
+- `doctor`: runs `Medic.Doctor`. Typically this is the last command you want to run.
+
+### Custom Update commands
+
+A custom command is a list with 3 or 4 items: a description, a shell command, arguments,
+and an optional list of opts that will be sent to `System.cmd/4`.
+For example: `["Seeding DB", "mix", ["run", "priv/repo/seeds.exs"]]`
+
+Your `.medic.update.exs` file can have a combination of built-in commands and custom commands:
+
+```elixir
+[
+  :update_code,
+  :update_mix,
+  :update_npm,
+  :build_npm,
+  :migrate,
+  ["Seeding DB", "mix", ["run", "priv/repo/seeds.exs"]],
+  :doctor
+]
+```
+
 ## Using medic from github
 
 ```elixir
@@ -114,3 +166,13 @@ Mix.install([
   {:medic, github: "geometerio/medic", force: true}
 ])
 ```
+
+## Using medic from your local filesystem (when modifying medic)
+
+```elixir
+Mix.install([
+  {:medic, path: Path.expand("../../medic", __DIR__), force: true}
+])
+```
+
+(You may need to change the path to match your filesystem layout.)
