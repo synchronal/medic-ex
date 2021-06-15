@@ -1,10 +1,19 @@
 # Installation
 
+Use the generators to add support files and set up your `.medic` directory:
+
+```shell
+mix archive.install hex gen_medic
+mix gen.medic
+```
+
+## The long way:
+
 Add the following file at `.medic/require.exs`:
 
 ```elixir
 Mix.install([
-  {:medic, force: true}
+  {:medic, "~> 0.5", force: true}
 ])
 ```
 
