@@ -24,29 +24,33 @@ defmodule Medic.Checks.Direnv do
   keys have a real export.
   """
   def has_all_keys? do
-    diff = List.myers_difference(keys(), keys(".sample"))
-    keys = Keyword.keys(diff)
+    if path(".sample") |> File.exists?() do
+      diff = List.myers_difference(keys(), keys(".sample"))
+      keys = Keyword.keys(diff)
 
-    cond do
-      keys == [:eq] ->
-        :ok
+      cond do
+        keys == [:eq] ->
+          :ok
 
-      Enum.member?(keys, :ins) ->
-        message = """
-        .envrc and .envrc.sample keys do not match
-        in .envrc but not .envrc.sample: #{Keyword.get(diff, :del) |> inspect()}
-        in .envrc.sample but not .envrc: #{Keyword.get(diff, :ins) |> inspect()}
-        """
+        Enum.member?(keys, :ins) ->
+          message = """
+          .envrc and .envrc.sample keys do not match
+          in .envrc but not .envrc.sample: #{Keyword.get(diff, :del) |> inspect()}
+          in .envrc.sample but not .envrc: #{Keyword.get(diff, :ins) |> inspect()}
+          """
 
-        {:error, message, "# make .envrc have the same keys as .envrc.sample"}
+          {:error, message, "# make .envrc have the same keys as .envrc.sample"}
 
-      true ->
-        message = """
-        in .envrc but not .envrc.sample: #{Keyword.get(diff, :del) |> inspect()}
-        be sure essential keys from local .envrc are added to .envrc.sample
-        """
+        true ->
+          message = """
+          in .envrc but not .envrc.sample: #{Keyword.get(diff, :del) |> inspect()}
+          be sure essential keys from local .envrc are added to .envrc.sample
+          """
 
-        {:warn, message}
+          {:warn, message}
+      end
+    else
+      {:error, "No .envrc.sample found", "touch .envrc.sample"}
     end
   end
 
