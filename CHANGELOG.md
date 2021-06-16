@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.1
+
+- Add file existence checks to `Direnv` and `Homebrew`.
+
 ## 0.5.0
 
 - [breaking change] Medic looks for files at:
