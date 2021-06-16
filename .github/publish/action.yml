@@ -22,6 +22,10 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Deps Get
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: mix deps.get
     - name: Authenticate
       shell: bash
       run: |
