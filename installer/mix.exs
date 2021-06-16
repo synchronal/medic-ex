@@ -6,6 +6,7 @@ defmodule GenMedic.MixProject do
 
   Adds necessary Medic support files to a project.
   """
+  @medic_url "https://hex.pm/packages/medic"
   @scm_url "https://github.com/geometerio/medic"
   @version "0.5.0"
 
@@ -42,7 +43,7 @@ defmodule GenMedic.MixProject do
       extras: [
         "README.md"
       ],
-      main: "README.md",
+      main: "readme",
       source_ref: "v#{@version}"
     ]
   end
@@ -53,7 +54,7 @@ defmodule GenMedic.MixProject do
         "Geometer LLC"
       ],
       licenses: ["MIT"],
-      links: %{"GitHub" => @scm_url},
+      links: %{"GitHub" => @scm_url, "Medic" => @medic_url},
       files: ~w(lib templates mix.exs README.md)
     ]
   end

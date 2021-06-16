@@ -7,86 +7,74 @@ mix archive.install hex gen_medic
 mix gen.medic
 ```
 
-## The long way:
+## Installed Files
 
-Add the following file at `.medic/require.exs`:
+The medic generators will add a number of files in the root path of the current project:
 
-```elixir
-Mix.install([
-  {:medic, "~> 0.5", force: true}
-])
+```
+├── .medic/
+│   ├── .medic/require.exs
+│   ├── .medic/doctor.exs
+│   ├── .medic/update.exs
+│   ├── .medic/_support/
+│   │   ├── cecho.sh
+│   │   ├── check.sh
+│   │   ├── confirm.sh
+│   │   ├── doctor.sh
+│   │   ├── os.sh
+│   │   └── step.sh
+│   └── .medic/checks/
+└── bin/dev/
+    ├── docs
+    ├── doctor
+    ├── start
+    ├── test
+    └── update
 ```
 
-Add the following line to `.gitignore`:
+And the following lines to `.gitignore`:
 
 ```
 .medic/skipped/
+.medic/.doctor.out
 ```
 
-And the following files:
+The shell scripts in `bin/dev` use the bash helpers in `.medic/_support` to help bootstrap
+a project on a new computer (which may not have Erlang or Elixir, for instance). As quickly
+as possible, the execution runtime moves into Elixir.
 
-- `bin/dev/doctor`:
+## Alternate Medic Source
 
-  ```bash
-  #!/usr/bin/env bash
+Scripts in `bin/dev` require `.medic/require.exs`, which uses `Mix.install/1` to download
+Medic and make it available. By default, `gen_medic` generates a file that looks like this, where version
+is matched to version of `gen_medic`:
 
-  set -e
-  set -u
-  set -o pipefail
+```elixir
+Mix.install([
+  {:medic, "~> 0.5.0", force: true}
+])
+```
 
-  source ".medic/_support/doctor.sh"
+To use medic from GitHub, change `.medic/require.exs` as follows:
 
-  # run doctor in home directory if present
-  if [[ -f "${HOME}/bin/dev/doctor" ]]; then
-    if ! step "Found a doctor script in home directory" "pushd ${HOME} > /dev/null && ./bin/dev/doctor && popd > /dev/null"; then
-      exit 1
-    fi
-  fi
+```elixir
+Mix.install([
+  {:medic, github: "geometerio/medic", force: true}
+])
+```
 
-  cecho --green "\n▸" --bright-bold-cyan "Running initial doctor checks..."
+When developing locally, a local path can be used:
 
-  check "asdf: installed" \
-    "command -v asdf" \
-    "open 'https://asdf-vm.com/#/core-manage-asdf'"
+```elixir
+Mix.install([
+  {:medic, path: "../../medic", force: true}
+])
+```
 
-  check "asdf: erlang plugin installed" \
-    "asdf plugin-list | grep erlang" \
-    "asdf plugin-add erlang"
+**Note:** In Elixir 1.12.0, relative paths must be expanded using `Path.expand(path, __DIR__)`.
 
-  check "asdf: elixir plugin installed" \
-    "asdf plugin-list | grep elixir" \
-    "asdf plugin-add elixir"
 
-  check "asdf: tools are installed" \
-    "asdf which erl > /dev/null && asdf which elixir > /dev/null" \
-    "asdf install"
-
-  echo ""
-
-  elixir -r .medic/require.exs -e "Medic.Doctor.run()" $*
-  ```
-
-- `bin/dev/test`:
-
-  ```bash
-  #!/bin/bash
-
-  elixir -r .medic/require.exs -e "Medic.Test.run()" $*
-  ```
-
-- `bin/dev/update`:
-
-  ```bash
-  #!/usr/bin/env bash
-
-  set -e
-
-  trap "exit" INT
-
-  elixir -r .medic/require.exs -e "Medic.Update.run()" $*
-  ```
-
-## Configure Doctor checks
+## Configure Doctor Checks
 
 Doctor defaults to a subset of available checks. The set of checks to run
 can be configured in `.medic/doctor.exs`. If this file exists, it should be a
@@ -117,23 +105,30 @@ For example:
 ]
 ```
 
-## Configure Update commands
+## Configure Update Commands
 
 Commands are read from `.medic/update.exs` in your project, which should
 contain a list of commands.
 
-### Recommended Update configuration
+### Recommended Update Configuration
 
 This is the recommended list of commands for a database-backed Phoenix app (in this order):
 
 ```elixir
-[:update_code, :update_mix, :update_npm, :build_npm, :migrate, :doctor]
+[
+  :update_code,
+  :update_mix,
+  :update_npm,
+  :build_npm,
+  :migrate,
+  :doctor
+]
 ```
 
 When creating a new project, just copy the line above into `.medic/update.exs`
 in your project.
 
-### Built-in Update commands
+### Built-in Update Commands
 
 The following commands are built in and can be specified as atoms:
 
@@ -144,7 +139,7 @@ The following commands are built in and can be specified as atoms:
 - `migrate`: performs `mix ecto.migrate`
 - `doctor`: runs `Medic.Doctor`. Typically this is the last command you want to run.
 
-### Custom Update commands
+### Custom Update Commands
 
 A custom command is a list with 3 or 4 items: a description, a shell command, arguments,
 and an optional list of opts that will be sent to `System.cmd/3`.
@@ -163,21 +158,3 @@ Your `.medic/update.exs` file can have a combination of built-in commands and cu
   :doctor
 ]
 ```
-
-## Using medic from github
-
-```elixir
-Mix.install([
-  {:medic, github: "geometerio/medic", force: true}
-])
-```
-
-## Using medic from your local filesystem (when modifying medic)
-
-```elixir
-Mix.install([
-  {:medic, path: Path.expand("../../medic", __DIR__), force: true}
-])
-```
-
-(You may need to change the path to match your filesystem layout.)

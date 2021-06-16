@@ -1,6 +1,17 @@
 defmodule Medic.Doctor do
   @moduledoc """
   Checks to ensure that the application can be run for development and tests.
+
+  ## Usage
+
+  `Medic.Doctor` is run from a shell script generated at `bin/dev/doctor`:
+
+      elixir -r .medic/require.exs -e "Medic.Doctor.run()" $*
+
+  ## Configuration
+
+  See the guides for information on how to [Configure Doctor Checks](installation.html#configure-doctor-checks)
+  for a specific project or how to write [Custom Checks](overview.html#local-checks).
   """
 
   alias Medic.Check

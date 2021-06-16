@@ -2,12 +2,20 @@ defmodule Medic.Update do
   @moduledoc """
   Performs a list of commands to update a project.
 
-  See guides/installation.md
+  ## Usage
+
+  `Medic.Update` is run from a shell script generated at `bin/dev/update`:
+
+      elixir -r .medic/require.exs -e "Medic.Update.run()" $*
+
+  ## Configuration
+
+  See the guides for information on how to [Configure Update Checks](installation.html#configure-update-commands).
   """
 
   @documentation_url "https://hexdocs.pm/medic/installation.html#configure-update-commands"
 
-  @doc "Runs the commands listed in `.medic/update.exs`. See module docs for more info."
+  @doc "Runs the commands listed in `.medic/update.exs`."
   def run, do: read_commands() |> Enum.each(&run_command/1)
 
   defp run_command(:update_code), do: run_command(["Updating code", "git", ["pull", "--rebase"]])

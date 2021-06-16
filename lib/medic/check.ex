@@ -3,6 +3,23 @@ defmodule Medic.Check do
 
   alias Medic.UI
 
+  @typedoc """
+  Valid return values from a check.
+
+  * `:ok` - The check succeeded with no problems.
+  * `:skipped` - Doctor checks for files in `.medic/skipped/` to skip a check. Custom
+    checks could return this to notify Doctor that they chose internally to skip the check.
+  * `{:warn, output}` - The check generated warnings, but does not stop Doctor from proceeding.
+  * `{:error, output, remedy}` - The check failed. Output may be `stdout` and/or `stderr` generated
+    from shell commands, or custom error output to show to the user. The `remedy` will by copied
+    into the local paste buffer.
+  """
+  @type check_return_t() ::
+          :ok
+          | :skipped
+          | {:warn, output :: binary}
+          | {:error, output :: binary, remedy :: binary}
+
   @doc false
   def run({module, meta_function}),
     do: run({module, meta_function, []})

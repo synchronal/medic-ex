@@ -1,5 +1,3 @@
 defmodule GenMedic do
-  @moduledoc """
-  Documentation for `GenMedic`.
-  """
+  @moduledoc false
 end

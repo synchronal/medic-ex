@@ -1,8 +1,11 @@
 defmodule Medic.Checks do
-  @moduledoc false
+  @moduledoc """
+  Namespace for check modules provided by Medic.
+  """
 
   @checks_dir ".medic/checks"
 
+  @doc false
   def load_local_files do
     with :ok <- checks_dir_exists?(),
          {:ok, files} <- File.ls(@checks_dir) do

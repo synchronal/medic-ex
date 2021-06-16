@@ -1,6 +1,8 @@
 defmodule Medic.MixProject do
   use Mix.Project
 
+  @gen_medic_url "https://hex.pm/packages/gen_medic"
+  @scm_url "https://github.com/geometerio/medic"
   @version "0.5.1"
   def project do
     [
@@ -10,11 +12,11 @@ defmodule Medic.MixProject do
       dialyzer: dialyzer(),
       docs: docs(),
       elixir: "~> 1.12",
-      homepage_url: "https://github.com/geometerio/medic",
+      homepage_url: @scm_url,
       name: "Medic",
       package: package(),
       preferred_cli_env: [credo: :test],
-      source_url: "https://github.com/geometerio/medic",
+      source_url: @scm_url,
       start_permanent: Mix.env() == :prod,
       version: @version
     ]
@@ -49,11 +51,36 @@ defmodule Medic.MixProject do
     [
       extras: [
         "guides/overview.md",
-        "guides/installation.md",
-        "README.md"
+        "guides/installation.md"
       ],
+      groups_for_modules: docs_module_groups(),
       main: "overview",
       source_ref: "v#{@version}"
+    ]
+  end
+
+  defp docs_module_groups do
+    [
+      Commands: [
+        Medic.Doctor,
+        Medic.Test,
+        Medic.Update
+      ],
+      Checks: [
+        Medic.Checks,
+        Medic.Checks.Asdf,
+        Medic.Checks.Chromedriver,
+        Medic.Checks.Direnv,
+        Medic.Checks.Hex,
+        Medic.Checks.Homebrew,
+        Medic.Checks.NPM,
+        Medic.Checks.Postgres
+      ],
+      Util: [
+        Medic.Check,
+        Medic.Cmd,
+        Medic.Etc
+      ]
     ]
   end
 
@@ -61,7 +88,7 @@ defmodule Medic.MixProject do
     [
       licenses: ["MIT"],
       maintainers: ["Geometer"],
-      links: %{"GitHub" => "https://github.com/geometerio/medic"}
+      links: %{"GitHub" => @scm_url, "Generators" => @gen_medic_url}
     ]
   end
 end

@@ -23,12 +23,13 @@ Checks are configured to run via `Medic.Doctor` via MFA
 (`{module, function, arguments}`) syntax, with `{module, function}` as a shortcut
 for zero-arity checks.
 
-## Local checks
+## Local Checks
 
 Local checks can be created by adding `exs` files in `.medic/checks`. Any elixir
 script files present in that directory will be automatically loaded by Medic
 prior to execution.
 
+Checks should return a `t:Medic.Check.check_return_t/0`.
 
 For example, if the following module is added at `.medic/checks/local_check.exs`
 
