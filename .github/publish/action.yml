@@ -64,9 +64,11 @@ runs:
           search=$(mix hex.search "${name}" | sed 's/\x1b\[[^m]+m//g;' | grep "https://hex.pm/packages/${name}")
         fi
 
+        echo "name: ${name}"
+        echo "hex.search: ${search}"
         remote_version=$(echo "${search}" | sed -ne 's/[^0-9]*\(\([0-9]\.\)\{0,4\}[0-9][^.]\).*/\1/p')
 
-        echo "${remote_version}"
+        echo "remote version: ${remote_version}"
         echo "::endgroup::"
         echo "::set-output name=VERSION::$(echo $remote_version)"
 
