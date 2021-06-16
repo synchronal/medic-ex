@@ -133,6 +133,6 @@ jobs:
       - name: Publish GenMedic
         uses: ./.github/publish
         with:
-          name: medic
+          name: gen_medic
           working-directory: installer
           key: ${{ secrets.HEX_PM_KEY }}
