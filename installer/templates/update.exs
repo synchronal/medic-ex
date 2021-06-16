@@ -4,6 +4,6 @@
   :update_npm,
   :build_npm,
   :doctor,
-  :migrate,
+  :migrate
   # ["Seeding DB", "mix", ["run", "priv/repo/seeds.exs"]]
 ]

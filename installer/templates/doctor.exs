@@ -11,7 +11,7 @@
   {Medic.Checks.NPM, :exists?},
   {Medic.Checks.NPM, :require_minimum_version, ["7.16.0"]},
   {Medic.Checks.NPM, :any_packages_installed?},
-  {Medic.Checks.NPM, :all_packages_installed?},
+  {Medic.Checks.NPM, :all_packages_installed?}
   # {Medic.Checks.Postgres, :running?},
   # {Medic.Checks.Postgres, :correct_version_running?},
   # {Medic.Checks.Postgres, :role_exists?},
