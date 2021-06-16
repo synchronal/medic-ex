@@ -15,7 +15,7 @@ defmodule Medic.MixProject do
       homepage_url: @scm_url,
       name: "Medic",
       package: package(),
-      preferred_cli_env: [credo: :test],
+      preferred_cli_env: [credo: :test, dialyzer: :test],
       source_url: @scm_url,
       start_permanent: Mix.env() == :prod,
       version: @version
@@ -35,7 +35,8 @@ defmodule Medic.MixProject do
     [
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.24", only: :dev, runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:mix_audit, "~> 0.1", only: [:dev, :test], runtime: false}
     ]
   end
 
