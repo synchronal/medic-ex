@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.0
+
+* Add `Medic.Checks.Chromedriver.chrome_installed?/0`.
+* `Medic.Checks.Chromedriver.unquarantined?/0` suggests `brew install` rather than `brew bundle`.
+
 ## 0.5.1
 
 - Add file existence checks to `Direnv` and `Homebrew`.

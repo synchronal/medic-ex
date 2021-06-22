@@ -1,5 +1,6 @@
 [
   {Medic.Checks.Homebrew, :bundled?},
+  # {Medic.Checks.Chromedriver, :chrome_installed??},
   # {Medic.Checks.Chromedriver, :unquarantined?},
   # {Medic.Checks.Chromedriver, :versions_match?},
   {Medic.Checks.Direnv, :envrc_file_exists?},

@@ -11,23 +11,27 @@ defmodule Medic.Checks.Chromedriver do
   alias Medic.Etc
 
   @doc """
+  Checks to make sure that Google Chrome is installed.
+  """
+  def chrome_installed? do
+    if File.dir?("/Applications/Google Chrome.app") do
+      :ok
+    else
+      {:error, "Chrome not installed", "brew install --cask google-chrome"}
+    end
+  end
+
+  @doc """
   Checks that chromedriver is installed, and has not been quarantined by the
   MacOS security sandbox.
   """
   def unquarantined? do
     with {:ok, path} <- chromedriver_path(),
          {:ok, attrs} <- xattrs(path),
-         :unquarantined <- state(attrs) do
+         :ok <- quarantine_state(attrs) do
       :ok
     else
-      {:error, :chromedriver, output} ->
-        {:error, "chromedriver was not found\n#{output}", "brew bundle"}
-
-      {:error, :xattr, output} ->
-        {:error, "unable to find chromedriver xattrs\n#{output}", "# are you on a mac?"}
-
-      :quarantined ->
-        {:error, "chromedriver is quarantined by the MacOS security sandbox", "xattr -d com.apple.quarantine $(command -v chromedriver)"}
+      error -> error
     end
   end
 
@@ -56,7 +60,7 @@ defmodule Medic.Checks.Chromedriver do
     System.cmd("command", ["-v", "chromedriver"])
     |> case do
       {path, 0} -> {:ok, String.trim(path)}
-      {output, _} -> {:error, :chromedriver, output}
+      {output, _} -> {:error, "chromedriver was not found\n#{output}", "brew install --cask chromedriver-beta"}
     end
   end
 
@@ -64,13 +68,13 @@ defmodule Medic.Checks.Chromedriver do
     System.cmd("xattr", [path])
     |> case do
       {output, 0} -> {:ok, output}
-      {output, _} -> {:error, :xattr, output}
+      {output, _} -> {:error, "unable to find chromedriver xattrs\n#{output}", "# are you on a mac?"}
     end
   end
 
-  defp state(attrs) do
+  defp quarantine_state(attrs) do
     if String.contains?(attrs, "com.apple.quarantine"),
-      do: :quarantined,
-      else: :unquarantined
+      do: {:error, "chromedriver is quarantined by the MacOS security sandbox", "xattr -d com.apple.quarantine $(command -v chromedriver)"},
+      else: :ok
   end
 end
