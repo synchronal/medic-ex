@@ -3,7 +3,7 @@ defmodule Medic.MixProject do
 
   @gen_medic_url "https://hex.pm/packages/gen_medic"
   @scm_url "https://github.com/geometerio/medic"
-  @version "0.5.2"
+  @version "0.6.0"
   def project do
     [
       app: :medic,
