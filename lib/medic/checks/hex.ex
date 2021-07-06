@@ -20,6 +20,15 @@ defmodule Medic.Checks.Hex do
   end
 
   @doc """
+  Checks that rebar is installed locally.
+  """
+  def local_rebar_installed? do
+    if File.exists?(rebar_path()),
+      do: :ok,
+      else: {:error, "local rebar not installed", "mix local.rebar --force"}
+  end
+
+  @doc """
   Checks that all Mix dependencies are installed.
   """
   def packages_installed? do
@@ -28,5 +37,14 @@ defmodule Medic.Checks.Hex do
     if output =~ "the dependency is not available",
       do: {:error, output, "mix deps.get"},
       else: :ok
+  end
+
+  defp rebar_path do
+    {elixir_path, 0} = System.cmd("asdf", ["which", "elixir"])
+    {elixir_root, _} = elixir_path |> String.trim() |> Path.split() |> Enum.split(-2)
+
+    elixir_root
+    |> Path.join()
+    |> Path.join([".mix/rebar"])
   end
 end
