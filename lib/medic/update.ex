@@ -21,6 +21,7 @@ defmodule Medic.Update do
   defp run_command(:update_code), do: run_command(["Updating code", "git", ["pull", "--rebase"]])
   defp run_command(:update_mix), do: run_command(["Updating mix deps", "mix", ["deps.get"], [env: [{"MIX_QUIET", "true"}]]])
   defp run_command(:update_npm), do: run_command(["Updating npm deps", "npm", ["install", "--prefix", "assets"]])
+  defp run_command(:build_mix), do: run_command(["Rebuilding mix deps", "mix", ["deps.compile"], [check: {Medic.Checks.Hex, :packages_compiled?}]])
   defp run_command(:build_npm), do: run_command(["Rebuilding JS", "npm", ["run", "build", "--prefix", "assets"]])
   defp run_command(:migrate), do: run_command(["Running migrations", "mix", ["ecto.migrate"]])
   defp run_command(:doctor), do: Medic.Doctor.run()

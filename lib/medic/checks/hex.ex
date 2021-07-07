@@ -39,6 +39,17 @@ defmodule Medic.Checks.Hex do
       else: :ok
   end
 
+  @doc """
+  Checks that all Mix dependencies are installed.
+  """
+  def packages_compiled? do
+    {output, 0} = System.cmd("mix", ["deps"])
+
+    if output =~ "the dependency build is outdated",
+      do: {:error, "Hex deps are not compiled", "mix deps.compile"},
+      else: :ok
+  end
+
   defp rebar_path do
     {elixir_path, 0} = System.cmd("asdf", ["which", "elixir"])
     {elixir_root, _} = elixir_path |> String.trim() |> Path.split() |> Enum.split(-2)

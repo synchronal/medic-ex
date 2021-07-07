@@ -2,6 +2,7 @@
   :update_code,
   :update_mix,
   :update_npm,
+  # :build_mix,
   :build_npm,
   :doctor,
   :migrate

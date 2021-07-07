@@ -22,10 +22,26 @@ defmodule Medic.Cmd do
   """
   @spec run(binary(), binary(), list(binary()), list()) :: {binary(), integer()}
   def run(description, command, args, opts \\ []) do
-    UI.heading(description, [command | args])
-    result = System.cmd(command, args, opts |> Keyword.merge(into: IO.stream(:stdio, 1)))
-    IO.puts("")
-    result
+    check = Keyword.get(opts, :check)
+
+    if check do
+      case Medic.Check.run(check) do
+        {:error, _output, _remedy} ->
+          IO.puts("")
+          run(description, command, args, [])
+
+        _check ->
+          IO.puts("")
+          UI.heading(description, [command | args])
+          IO.puts("")
+          {"Already compiled", 0}
+      end
+    else
+      UI.heading(description, [command | args])
+      result = System.cmd(command, args, opts |> Keyword.merge(into: IO.stream(:stdio, 1)))
+      IO.puts("")
+      result
+    end
   end
 
   @doc """
