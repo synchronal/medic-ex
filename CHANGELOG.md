@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.8.0
+
+* Add `Medic.Checks.Hex.packages_compiled?/0`
+* Add `:build_mix` Update command, which runs `packages_compiled?` to only run if
+  deps require compilation.
+
+## 0.7.0
+
+* Add `Medic.Checks.Hex.local_rebar_installed?/0`
+
 ## 0.6.0
 
 * Add `Medic.Checks.Chromedriver.chrome_installed?/0`.
