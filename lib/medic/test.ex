@@ -11,6 +11,6 @@ defmodule Medic.Test do
   """
   def run do
     Medic.Cmd.run!("Compiling", "mix", ["compile", "--force", "--warnings-as-errors"], env: [{"MIX_ENV", "test"}])
-    Medic.Cmd.run!("Running tests", "mix", ["test", "--color"])
+    Medic.Cmd.run!("Running tests", "mix", ["test", "--color", "--warnings-as-errors"])
   end
 end
