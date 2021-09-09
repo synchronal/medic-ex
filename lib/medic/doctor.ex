@@ -78,12 +78,17 @@ defmodule Medic.Doctor do
   end
 
   def clipboard(cmd) do
-    case System.find_executable("pbcopy") do
+    clippy = find_clipboard_command()
+    copy(clippy, cmd)
+  end
+
+  def copy({executable, args}, cmd) do
+    case System.find_executable(executable) do
       nil ->
-        {:error, "Cannot find pbcopy"}
+        {:error, "Cannot find #{executable}"}
 
       path ->
-        port = Port.open({:spawn_executable, path}, [:binary, args: []])
+        port = Port.open({:spawn_executable, path}, [:binary, args: args])
 
         case cmd do
           cmd when is_binary(cmd) ->
@@ -95,6 +100,13 @@ defmodule Medic.Doctor do
 
         send(port, {self(), :close})
         :ok
+    end
+  end
+
+  defp find_clipboard_command do
+    case :os.type() do
+      {:unix, :darwin} -> {"pbcopy", []}
+      {:unix, _other} -> {"xclip", []}
     end
   end
 
