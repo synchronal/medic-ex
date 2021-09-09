@@ -13,19 +13,25 @@ defmodule Medic.Checks.Homebrew do
   to be up to date.
   """
   def bundled? do
-    if brewfile_exists?() == :ok do
+    with :ok <- homebrew_installed?(),
+         :ok <- brewfile_exists?() do
       case System.cmd("brew", ["bundle", "check"], env: [{"HOMEBREW_NO_AUTO_UPDATE", "1"}]) do
         {_output, 0} -> :ok
         {output, _} -> {:error, output, "brew bundle"}
       end
-    else
-      {:error, "Brewfile does not exist", "touch Brewfile"}
     end
   end
 
   def brewfile_exists? do
     if File.exists?("Brewfile"),
       do: :ok,
-      else: {:error, :noent}
+      else: {:error, "Brewfile does not exist", "touch Brewfile"}
+  end
+
+  def homebrew_installed? do
+    case System.cmd("which", ["brew"]) do
+      {_output, 0} -> :ok
+      {_output, _exit_status} -> {:error, "Homebrew not installed", "open https://brew.sh"}
+    end
   end
 end
