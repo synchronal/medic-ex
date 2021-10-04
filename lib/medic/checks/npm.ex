@@ -42,13 +42,13 @@ defmodule Medic.Checks.NPM do
   Checks that the packages declared in assets/package-lock.json are all installed.
   """
   def all_packages_installed? do
-    System.cmd("npm", ["outdated", "--prefix", "assets"])
+    System.cmd("npm", ["ls", "--prefix", "assets", "--prefer-offline"], stderr_to_stdout: true)
     |> case do
       {output, 0} ->
-        missing = output |> String.split("\n") |> Enum.filter(&Regex.match?(~r/MISSING/, &1))
+        missing = output |> String.split("\n") |> Enum.filter(&Regex.match?(~r/UNMET DEPENDENCY/, &1))
 
         if length(missing) > 0,
-          do: {:error, ["Some packages are not installed" | missing] |> Enum.join("\n"), "npm i --prefix assets"},
+          do: {:error, ["Some packages are not installed" | missing] |> Enum.join("\n"), "npm ci --prefix assets"},
           else: :ok
 
       {output, _} ->
