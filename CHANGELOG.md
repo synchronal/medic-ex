@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+
+- Fix `Medic.Checks.NPM.all_packages_installed?/0` check for unmet dependencies. Uses `npm ls` in place of `npm outdated`.
+
 ## 1.2.0
 
 - Add `Medic.Checks.Git.uses_ssh?/1` to force SSH instead of HTTPS.
