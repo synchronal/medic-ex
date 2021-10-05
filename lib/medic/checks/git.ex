@@ -10,6 +10,7 @@ defmodule Medic.Checks.Git do
   @doc """
   Checks to make sure that git defaults to using SSH instead of HTTPS.
   """
+  @spec uses_ssh?(binary()) :: Medic.Check.check_return_t()
   def uses_ssh?(domain) when is_binary(domain) do
     case System.cmd("git", ["config", "-l"]) do
       {output, 0} ->

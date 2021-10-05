@@ -13,6 +13,7 @@ defmodule Medic.Checks.Direnv do
   @doc """
   Checks to make sure that `.envrc` exists in the project root directory.
   """
+  @spec envrc_file_exists?() :: Medic.Check.check_return_t()
   def envrc_file_exists? do
     if File.exists?(path()),
       do: :ok,
@@ -23,6 +24,7 @@ defmodule Medic.Checks.Direnv do
   Compares keys in `.envrc.sample` and `.envrc`, to ensure that all sample
   keys have a real export.
   """
+  @spec has_all_keys?() :: Medic.Check.check_return_t()
   def has_all_keys? do
     if path(".sample") |> File.exists?() do
       diff = List.myers_difference(keys(), keys(".sample"))

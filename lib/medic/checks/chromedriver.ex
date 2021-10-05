@@ -13,6 +13,7 @@ defmodule Medic.Checks.Chromedriver do
   @doc """
   Checks to make sure that Google Chrome is installed.
   """
+  @spec chrome_installed?() :: Medic.Check.check_return_t()
   def chrome_installed? do
     if File.dir?("/Applications/Google Chrome.app") do
       :ok
@@ -25,6 +26,7 @@ defmodule Medic.Checks.Chromedriver do
   Checks that chromedriver is installed, and has not been quarantined by the
   MacOS security sandbox.
   """
+  @spec unquarantined?() :: Medic.Check.check_return_t()
   def unquarantined? do
     with {:ok, path} <- chromedriver_path(),
          {:ok, attrs} <- xattrs(path),
@@ -38,6 +40,7 @@ defmodule Medic.Checks.Chromedriver do
   @doc """
   Checks that chromedriver matches the installed version of Chrome.
   """
+  @spec versions_match?() :: Medic.Check.check_return_t()
   def versions_match? do
     with {:ok, chromedriver_path} <- chromedriver_path(),
          chromedriver <- Etc.application_version(chromedriver_path, "-v"),

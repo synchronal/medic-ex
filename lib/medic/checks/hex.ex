@@ -11,6 +11,7 @@ defmodule Medic.Checks.Hex do
   @doc """
   Checks that hex is installed locally.
   """
+  @spec local_hex_installed?() :: Medic.Check.check_return_t()
   def local_hex_installed? do
     {output, 0} = System.cmd("mix", ["archive"])
 
@@ -22,6 +23,7 @@ defmodule Medic.Checks.Hex do
   @doc """
   Checks that rebar is installed locally.
   """
+  @spec local_rebar_installed?() :: Medic.Check.check_return_t()
   def local_rebar_installed? do
     if File.exists?(rebar_path()),
       do: :ok,
@@ -31,22 +33,24 @@ defmodule Medic.Checks.Hex do
   @doc """
   Checks that all Mix dependencies are installed.
   """
-  def packages_installed? do
+  @spec packages_compiled?() :: Medic.Check.check_return_t()
+  def packages_compiled? do
     {output, 0} = System.cmd("mix", ["deps"])
 
-    if output =~ "the dependency is not available",
-      do: {:error, output, "mix deps.get"},
+    if output =~ "the dependency build is outdated",
+      do: {:error, "Hex deps are not compiled", "mix deps.compile"},
       else: :ok
   end
 
   @doc """
   Checks that all Mix dependencies are installed.
   """
-  def packages_compiled? do
+  @spec packages_installed?() :: Medic.Check.check_return_t()
+  def packages_installed? do
     {output, 0} = System.cmd("mix", ["deps"])
 
-    if output =~ "the dependency build is outdated",
-      do: {:error, "Hex deps are not compiled", "mix deps.compile"},
+    if output =~ "the dependency is not available",
+      do: {:error, output, "mix deps.get"},
       else: :ok
   end
 

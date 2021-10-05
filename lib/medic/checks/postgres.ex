@@ -18,6 +18,7 @@ defmodule Medic.Checks.Postgres do
 
       {Medic.Checks.Postgres, :database_exists?, ["my_db_dev"]}
   """
+  @spec database_exists?(binary()) :: Medic.Check.check_return_t()
   def database_exists?(database_name) do
     {:ok, found_databases} = databases()
 
@@ -30,6 +31,7 @@ defmodule Medic.Checks.Postgres do
   Checks that the running Postgres database matches the version defined
   in ASDF's `.tool-versions` file.
   """
+  @spec correct_version_running?() :: Medic.Check.check_return_t()
   def correct_version_running? do
     {:ok, project_version} = get_project_version()
     {:ok, running_version} = get_running_version()
@@ -46,6 +48,7 @@ defmodule Medic.Checks.Postgres do
   @doc """
   Checks that a user `postgres` has been created in the running instance.
   """
+  @spec role_exists?() :: Medic.Check.check_return_t()
   def role_exists? do
     System.cmd("psql", ["-A", "-c", "\\du", "postgres"], stderr_to_stdout: true)
     |> case do
@@ -70,6 +73,7 @@ defmodule Medic.Checks.Postgres do
       {Medic.Checks.Postgres, :correct_data_directory, ["/path/to/data/directory"]}
 
   """
+  @spec correct_data_directory?(Path.t()) :: Medic.Check.check_return_t()
   def correct_data_directory?(path \\ "./priv/postgres/data") do
     {output, 0} = System.cmd("psql", ["-U", "postgres", "-tA", "-c", "SHOW data_directory;"], stderr_to_stdout: true)
 
@@ -83,6 +87,7 @@ defmodule Medic.Checks.Postgres do
   @doc """
   Checks whether Postgres is running, by attempting to list all databases.
   """
+  @spec running?() :: Medic.Check.check_return_t()
   def running? do
     case databases() do
       {:ok, _list} -> :ok

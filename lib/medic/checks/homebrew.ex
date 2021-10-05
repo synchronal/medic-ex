@@ -12,6 +12,7 @@ defmodule Medic.Checks.Homebrew do
   Expects there to be a Brewfile, and for all the dependencies in that Brewfile
   to be up to date.
   """
+  @spec bundled?() :: Medic.Check.check_return_t()
   def bundled? do
     with :ok <- homebrew_installed?(),
          :ok <- brewfile_exists?() do
@@ -22,6 +23,7 @@ defmodule Medic.Checks.Homebrew do
     end
   end
 
+  @spec brewfile_exists?() :: Medic.Check.check_return_t()
   def brewfile_exists? do
     if File.exists?("Brewfile"),
       do: :ok,
