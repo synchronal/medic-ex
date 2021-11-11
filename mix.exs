@@ -12,6 +12,7 @@ defmodule Medic.MixProject do
       dialyzer: dialyzer(),
       docs: docs(),
       elixir: "~> 1.12",
+      elixirc_paths: elixirc_paths(Mix.env()),
       homepage_url: @scm_url,
       name: "Medic",
       package: package(),
@@ -42,7 +43,7 @@ defmodule Medic.MixProject do
 
   defp dialyzer do
     [
-      plt_add_apps: [:mix],
+      plt_add_apps: [:ex_unit, :mix],
       plt_add_deps: :app_tree,
       plt_file: {:no_warn, "priv/plts/#{otp_version()}/dialyzer.plt"}
     ]
@@ -84,6 +85,9 @@ defmodule Medic.MixProject do
       ]
     ]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   defp otp_version do
     Path.join([:code.root_dir(), "releases", :erlang.system_info(:otp_release), "OTP_VERSION"])

@@ -7,7 +7,15 @@ defmodule Medic.UI do
       |> format()
       |> IO.puts()
 
-  def heading(message, details \\ nil),
+  def heading(message, details \\ nil, opts \\ [])
+
+  def heading(message, details, inline: true),
+    do:
+      [:green, "▸ ", :bright, :light_cyan, message, details_to_chardata(details), "...", :normal]
+      |> format()
+      |> IO.write()
+
+  def heading(message, details, _opts),
     do:
       [:green, "▸ ", :bright, :light_cyan, message, details_to_chardata(details), "...", :normal]
       |> format()

@@ -1,5 +1,7 @@
 # Changelog
 
+- Only compile out-of-date deps when running `build_mix` in update.
+
 ## 1.2.1
 
 - Fix `Medic.Checks.NPM.all_packages_installed?/0` check for unmet dependencies. Uses `npm ls` in place of `npm outdated`.

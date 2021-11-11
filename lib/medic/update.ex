@@ -13,15 +13,29 @@ defmodule Medic.Update do
   See the guides for information on how to [Configure Update Checks](installation.html#configure-update-commands).
   """
 
+  alias Medic.UI
+
   @documentation_url "https://hexdocs.pm/medic/installation.html#configure-update-commands"
 
   @doc "Runs the commands listed in `.medic/update.exs`."
   def run, do: read_commands() |> Enum.each(&run_command/1)
 
+  defp run_command(:build_mix) do
+    {output, 0} = System.cmd("mix", ["deps"])
+    outdated = Medic.Support.Hex.split(output) |> Enum.filter(fn dep -> dep.status == :outdated end)
+
+    if outdated == [] do
+      UI.heading("Rebuilding mix deps", ["mix", "deps.compile"], inline: true)
+      UI.skipped()
+    else
+      outdated_libs = outdated |> Enum.map(& &1.name)
+      run_command(["Rebuilding mix deps", "mix", ["deps.compile" | outdated_libs]])
+    end
+  end
+
   defp run_command(:update_code), do: run_command(["Updating code", "git", ["pull", "--rebase"]])
   defp run_command(:update_mix), do: run_command(["Updating mix deps", "mix", ["deps.get"], [env: [{"MIX_QUIET", "true"}]]])
   defp run_command(:update_npm), do: run_command(["Updating npm deps", "npm", ["install", "--prefix", "assets"]])
-  defp run_command(:build_mix), do: run_command(["Rebuilding mix deps", "mix", ["deps.compile"], [check: {Medic.Checks.Hex, :packages_compiled?}]])
   defp run_command(:build_npm), do: run_command(["Rebuilding JS", "npm", ["run", "build", "--prefix", "assets"]])
   defp run_command(:migrate), do: run_command(["Running migrations", "mix", ["ecto.migrate"]])
   defp run_command(:doctor), do: Medic.Doctor.run()
