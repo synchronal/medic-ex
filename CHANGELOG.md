@@ -1,5 +1,7 @@
 # Changelog
 
+## 1.2.2
+
 - Only compile out-of-date deps when running `build_mix` in update.
 
 ## 1.2.1

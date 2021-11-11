@@ -8,7 +8,7 @@ defmodule GenMedic.MixProject do
   """
   @medic_url "https://hex.pm/packages/medic"
   @scm_url "https://github.com/geometerio/medic"
-  @version "1.2.1"
+  @version "1.2.2"
 
   def project do
     [
