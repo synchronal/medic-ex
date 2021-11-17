@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.3
+
+- Fix NPM.all_packages_installed? return value when `npm ls` returns non-zero exit.
+
 ## 1.2.2
 
 - Only compile out-of-date deps when running `build_mix` in update.
