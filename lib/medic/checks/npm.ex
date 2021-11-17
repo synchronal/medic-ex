@@ -55,7 +55,7 @@ defmodule Medic.Checks.NPM do
           else: :ok
 
       {output, _} ->
-        {:error, output}
+        {:error, output, "npm ci --prefix assets"}
     end
   end
 
