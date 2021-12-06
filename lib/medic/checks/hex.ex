@@ -31,15 +31,31 @@ defmodule Medic.Checks.Hex do
   end
 
   @doc """
-  Checks that all Mix dependencies are installed.
-  """
-  @spec packages_compiled?() :: Medic.Check.check_return_t()
-  def packages_compiled? do
-    {output, 0} = System.cmd("mix", ["deps"])
+  Checks that all Mix dependencies are compiled.
 
-    if output =~ "the dependency build is outdated",
-      do: {:error, "Hex deps are not compiled", "mix deps.compile"},
-      else: :ok
+  ## Examples
+
+      {Medic.Checks.Hex, :packages_compiled?}
+      {Medic.Checks.Hex, :packages_compiled?, [cd: "subdirectory"]}
+
+  """
+  @spec packages_compiled?(opts :: Keyword.t()) :: Medic.Check.check_return_t()
+  def packages_compiled?(opts \\ []) do
+    case Keyword.fetch(opts, :cd) do
+      {:ok, directory} ->
+        {output, 0} = System.cmd("mix", ["deps"], cd: directory)
+
+        if output =~ "the dependency build is outdated",
+          do: {:error, "Hex deps are not compiled", "(cd #{directory} && mix deps.compile)"},
+          else: :ok
+
+      :error ->
+        {output, 0} = System.cmd("mix", ["deps"])
+
+        if output =~ "the dependency build is outdated",
+          do: {:error, "Hex deps are not compiled", "mix deps.compile"},
+          else: :ok
+    end
   end
 
   @doc """

@@ -64,11 +64,12 @@ defmodule Medic.Check do
   def skip_file({module, function}), do: skip_file({module, function, []})
 
   def skip_file({module, function, args}) do
-    arg_list = if Keyword.keyword?(args) do
-      args |> Keyword.values() |> Enum.join("+")
-    else
-      args |> Enum.join("+")
-    end
+    arg_list =
+      if Keyword.keyword?(args) do
+        args |> Keyword.values() |> Enum.join("+")
+      else
+        args |> Enum.join("+")
+      end
 
     filename =
       [module, function, arg_list]
