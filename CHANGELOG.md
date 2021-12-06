@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0
+
+- Hex checks can be run in subdirectories.
+
 ## 1.2.3
 
 - Fix NPM.all_packages_installed? return value when `npm ls` returns non-zero exit.
