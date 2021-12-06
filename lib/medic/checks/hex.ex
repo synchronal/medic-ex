@@ -44,14 +44,30 @@ defmodule Medic.Checks.Hex do
 
   @doc """
   Checks that all Mix dependencies are installed.
-  """
-  @spec packages_installed?() :: Medic.Check.check_return_t()
-  def packages_installed? do
-    {output, 0} = System.cmd("mix", ["deps"])
 
-    if output =~ "the dependency is not available",
-      do: {:error, output, "mix deps.get"},
-      else: :ok
+  ## Examples
+
+      {Medic.Checks.Hex, :packages_installed?}
+      {Medic.Checks.Hex, :packages_installed?, [cd: "subdirectory"]}
+
+  """
+  @spec packages_installed?(opts :: Keyword.t()) :: Medic.Check.check_return_t()
+  def packages_installed?(opts \\ []) do
+    case Keyword.fetch(opts, :cd) do
+      {:ok, directory} ->
+        {output, 0} = System.cmd("mix", ["deps"], cd: directory)
+
+        if output =~ "the dependency is not available",
+          do: {:error, output, "(cd #{directory} && mix deps.get)"},
+          else: :ok
+
+      :error ->
+        {output, 0} = System.cmd("mix", ["deps"])
+
+        if output =~ "the dependency is not available",
+          do: {:error, output, "mix deps.get"},
+          else: :ok
+    end
   end
 
   defp rebar_path do

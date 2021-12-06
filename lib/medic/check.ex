@@ -35,7 +35,7 @@ defmodule Medic.Check do
     if skipped?(module, function, args) do
       :skipped
     else
-      apply(module, function, args)
+      apply(module, function, wrap(args))
     end
   end
 
@@ -64,7 +64,11 @@ defmodule Medic.Check do
   def skip_file({module, function}), do: skip_file({module, function, []})
 
   def skip_file({module, function, args}) do
-    arg_list = args |> Enum.join("+")
+    arg_list = if Keyword.keyword?(args) do
+      args |> Keyword.values() |> Enum.join("+")
+    else
+      args |> Enum.join("+")
+    end
 
     filename =
       [module, function, arg_list]
@@ -76,5 +80,13 @@ defmodule Medic.Check do
       |> String.replace(~r{[^\w\-_\+\.]+}, "")
 
     Path.join(".medic/skipped", filename)
+  end
+
+  defp wrap(args) do
+    if Keyword.keyword?(args) and args != [] do
+      [args]
+    else
+      args
+    end
   end
 end

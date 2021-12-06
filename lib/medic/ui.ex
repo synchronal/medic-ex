@@ -56,8 +56,13 @@ defmodule Medic.UI do
   defp details_to_chardata([opts]) when is_list(opts),
     do: details_to_chardata(inspect(opts))
 
-  defp details_to_chardata(details),
-    do: [" (", :yellow, details |> List.wrap() |> Enum.intersperse(" "), :cyan, ")"]
+  defp details_to_chardata(details) do
+    if Keyword.keyword?(details) do
+      [" (", :yellow, inspect(details), :cyan, ")"]
+    else
+      [" (", :yellow, details |> List.wrap() |> Enum.intersperse(" "), :cyan, ")"]
+    end
+  end
 
   defp format(chardata) when is_list(chardata),
     do: IO.ANSI.format(chardata, true)
