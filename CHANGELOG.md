@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.4.0
+
 - Homebrew bundle check can specify a bundle file
 
 ## 1.3.0
