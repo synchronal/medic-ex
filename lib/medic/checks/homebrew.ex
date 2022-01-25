@@ -6,6 +6,7 @@ defmodule Medic.Checks.Homebrew do
   ## Examples
 
       {Check.Homebrew, :bundled?}
+      {Check.Homebrew, :bundled?, [path_to_file]}
   """
 
   @doc """
@@ -13,12 +14,25 @@ defmodule Medic.Checks.Homebrew do
   to be up to date.
   """
   @spec bundled?() :: Medic.Check.check_return_t()
+  @spec bundled?(Path.t()) :: Medic.Check.check_return_t()
   def bundled? do
     with :ok <- homebrew_installed?(),
          :ok <- brewfile_exists?() do
       case System.cmd("brew", ["bundle", "check"], env: [{"HOMEBREW_NO_AUTO_UPDATE", "1"}]) do
         {_output, 0} -> :ok
         {output, _} -> {:error, output, "brew bundle"}
+      end
+    end
+  end
+
+  def bundled?(file) do
+    filepath = Path.expand(file)
+
+    with :ok <- homebrew_installed?(),
+         :ok <- brewfile_exists?() do
+      case System.cmd("brew", ["bundle", "check", "--file", filepath], env: [{"HOMEBREW_NO_AUTO_UPDATE", "1"}, {"HOME", System.fetch_env!("HOME")}]) do
+        {_output, 0} -> :ok
+        {output, _} -> {:error, output, "brew bundle --file #{filepath}"}
       end
     end
   end

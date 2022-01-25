@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Homebrew bundle check can specify a bundle file
+
 ## 1.3.0
 
 - Hex checks can be run in subdirectories.
