@@ -84,7 +84,6 @@ defmodule Medic.Checks.NPM do
 
   # # #
 
-
   defp cmd_in_dir(dir_or_nil, command, params, opts \\ [])
   defp cmd_in_dir(nil, command, params, opts), do: System.cmd(command, params, opts)
   defp cmd_in_dir(dir, command, params, opts), do: System.cmd(command, params, Keyword.merge(opts, cd: dir))
