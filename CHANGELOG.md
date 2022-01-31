@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 1.5.0
+
+- NPM check accepts a `cd` option to change the working directory.
+
 ## 1.4.0
 
 - Homebrew bundle check can specify a bundle file
