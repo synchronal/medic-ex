@@ -49,6 +49,7 @@ defmodule Medic.Checks.NPM do
   @spec all_packages_installed?(opts :: Keyword.t()) :: Medic.Check.check_return_t()
   def all_packages_installed?(opts \\ []) do
     dir = Keyword.get(opts, :cd)
+
     cmd_in_dir(dir, "npm", ["ls", "--prefix", "assets", "--prefer-offline"], stderr_to_stdout: true)
     |> case do
       {output, 0} ->
@@ -72,6 +73,7 @@ defmodule Medic.Checks.NPM do
   @spec any_packages_installed?(opts :: Keyword.t()) :: Medic.Check.check_return_t()
   def any_packages_installed?(opts \\ []) do
     dir = Keyword.get(opts, :cd)
+
     cmd_in_dir(dir, "npm", ["list", "--prefix", "assets", "--dev"])
     |> case do
       {_output, 0} ->
