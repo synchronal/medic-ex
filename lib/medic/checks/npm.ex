@@ -42,16 +42,20 @@ defmodule Medic.Checks.NPM do
 
   @doc """
   Checks that the packages declared in assets/package-lock.json are all installed.
+
+  Opts:
+  - `cd`: The directory to run the command in.
   """
-  @spec all_packages_installed?() :: Medic.Check.check_return_t()
-  def all_packages_installed? do
-    System.cmd("npm", ["ls", "--prefix", "assets", "--prefer-offline"], stderr_to_stdout: true)
+  @spec all_packages_installed?(opts :: Keyword.t()) :: Medic.Check.check_return_t()
+  def all_packages_installed?(opts \\ []) do
+    dir = Keyword.get(opts, :cd)
+    cmd_in_dir(dir, "npm", ["ls", "--prefix", "assets", "--prefer-offline"], stderr_to_stdout: true)
     |> case do
       {output, 0} ->
         missing = output |> String.split("\n") |> Enum.filter(&Regex.match?(~r/UNMET DEPENDENCY/, &1))
 
         if length(missing) > 0,
-          do: {:error, ["Some packages are not installed" | missing] |> Enum.join("\n"), "npm ci --prefix assets"},
+          do: {:error, ["Some packages are not installed" | missing] |> Enum.join("\n"), remedy_in_dir(dir, "npm ci --prefix assets")},
           else: :ok
 
       {output, _} ->
@@ -61,16 +65,30 @@ defmodule Medic.Checks.NPM do
 
   @doc """
   Checks that npm install has been run at least once.
+
+  Opts:
+  - `cd`: The directory to run the command in.
   """
-  @spec any_packages_installed?() :: Medic.Check.check_return_t()
-  def any_packages_installed? do
-    System.cmd("npm", ["list", "--prefix", "assets", "--dev"])
+  @spec any_packages_installed?(opts :: Keyword.t()) :: Medic.Check.check_return_t()
+  def any_packages_installed?(opts \\ []) do
+    dir = Keyword.get(opts, :cd)
+    cmd_in_dir(dir, "npm", ["list", "--prefix", "assets", "--dev"])
     |> case do
       {_output, 0} ->
         :ok
 
       {output, _status_code} ->
-        {:error, output, "npm ci --prefix assets"}
+        {:error, output, remedy_in_dir(dir, "npm ci --prefix assets")}
     end
   end
+
+  # # #
+
+
+  defp cmd_in_dir(dir_or_nil, command, params, opts \\ [])
+  defp cmd_in_dir(nil, command, params, opts), do: System.cmd(command, params, opts)
+  defp cmd_in_dir(dir, command, params, opts), do: System.cmd(command, params, Keyword.merge(opts, cd: dir))
+
+  defp remedy_in_dir(nil, remedy), do: remedy
+  defp remedy_in_dir(dir, remedy), do: "(cd #{dir} && #{remedy})"
 end
