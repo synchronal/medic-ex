@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 1.5.1
+
+- Fix bug in NPM check's handling of `cd` option.
+
 ## 1.5.0
 
 - NPM check accepts a `cd` option to change the working directory.
