@@ -45,16 +45,17 @@ defmodule Medic.Checks.NPM do
 
   Opts:
   - `cd`: The directory to run the command in.
+  - `prefix`: Run npm with `--prefix`. Defaults to `assets`.
   """
   @spec all_packages_installed?(opts :: Keyword.t()) :: Medic.Check.check_return_t()
   def all_packages_installed?(opts \\ []) do
     dir = Keyword.get(opts, :cd)
 
     {output, status} =
-      Medic.Cmd.exec("npm", ["ls", "--prefix", "assets", "--prefer-offline"], Medic.Extra.Keyword.compact(cd: dir, stderr_to_stdout: true))
+      Medic.Cmd.exec("npm", ["ls", "--prefer-offline"] ++ default_args(opts), Medic.Extra.Keyword.compact(cd: dir, stderr_to_stdout: true))
 
     if status != 0 || Regex.match?(~r/UNMET DEPENDENCY/, output),
-      do: {:error, output, remedy_in_dir(dir, "npm ci --prefix assets")},
+      do: {:error, output, remedy_in_dir(dir, Enum.join(~w[npm ci] ++ default_args(opts), " "))},
       else: :ok
   end
 
@@ -63,19 +64,27 @@ defmodule Medic.Checks.NPM do
 
   Opts:
   - `cd`: The directory to run the command in.
+  - `prefix`: Run npm with `--prefix`. Defaults to `assets`.
   """
   @spec any_packages_installed?(opts :: Keyword.t()) :: Medic.Check.check_return_t()
   def any_packages_installed?(opts \\ []) do
     dir = Keyword.get(opts, :cd)
 
-    Medic.Cmd.exec("npm", ["list", "--prefix", "assets", "--dev"], Medic.Extra.Keyword.compact(cd: dir))
+    Medic.Cmd.exec("npm", ["list", "--dev"] ++ default_args(opts), Medic.Extra.Keyword.compact(cd: dir))
     |> case do
       {_output, 0} -> :ok
-      {output, _status_code} -> {:error, output, remedy_in_dir(dir, "npm ci --prefix assets")}
+      {output, _status_code} -> {:error, output, remedy_in_dir(dir, Enum.join(~w[npm ci] ++ default_args(opts), " "))}
     end
   end
 
   # # #
+
+  defp default_args(opts) do
+    case Keyword.get(opts, :prefix, "assets") do
+      nil -> []
+      prefix -> ["--prefix", prefix]
+    end
+  end
 
   defp remedy_in_dir(nil, remedy), do: remedy
   defp remedy_in_dir(dir, remedy), do: "(cd #{dir} && #{remedy})"

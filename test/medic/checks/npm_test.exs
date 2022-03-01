@@ -19,7 +19,7 @@ defmodule Medic.Checks.NpmTest do
       expect(
         Medic.Cmd.MockSystemCmd,
         :cmd,
-        fn "npm", ["ls", "--prefix", "assets", "--prefer-offline"], stderr_to_stdout: true ->
+        fn "npm", ["ls", "--prefer-offline", "--prefix", "assets"], stderr_to_stdout: true ->
           {@failure_output, 1}
         end
       )
@@ -31,7 +31,7 @@ defmodule Medic.Checks.NpmTest do
       expect(
         Medic.Cmd.MockSystemCmd,
         :cmd,
-        fn "npm", ["ls", "--prefix", "assets", "--prefer-offline"], stderr_to_stdout: true ->
+        fn "npm", ["ls", "--prefer-offline", "--prefix", "assets"], stderr_to_stdout: true ->
           {@failure_output, 0}
         end
       )
@@ -43,7 +43,7 @@ defmodule Medic.Checks.NpmTest do
       expect(
         Medic.Cmd.MockSystemCmd,
         :cmd,
-        fn "npm", ["ls", "--prefix", "assets", "--prefer-offline"], cd: "server", stderr_to_stdout: true ->
+        fn "npm", ["ls", "--prefer-offline", "--prefix", "assets"], cd: "server", stderr_to_stdout: true ->
           {@failure_output, 1}
         end
       )
@@ -55,12 +55,51 @@ defmodule Medic.Checks.NpmTest do
       expect(
         Medic.Cmd.MockSystemCmd,
         :cmd,
-        fn "npm", ["ls", "--prefix", "assets", "--prefer-offline"], cd: "server", stderr_to_stdout: true ->
+        fn "npm", ["ls", "--prefer-offline", "--prefix", "assets"], cd: "server", stderr_to_stdout: true ->
           {@failure_output, 0}
         end
       )
 
       assert Medic.Checks.NPM.all_packages_installed?(cd: "server") == {:error, String.trim(@failure_output), "(cd server && npm ci --prefix assets)"}
+    end
+
+    test "honors the `prefix` option in both the check and the remedy with a nonzero exit status" do
+      expect(
+        Medic.Cmd.MockSystemCmd,
+        :cmd,
+        fn "npm", ["ls", "--prefer-offline", "--prefix", "subdirectory"], stderr_to_stdout: true ->
+          {@failure_output, 1}
+        end
+      )
+
+      assert Medic.Checks.NPM.all_packages_installed?(prefix: "subdirectory") ==
+               {:error, String.trim(@failure_output), "npm ci --prefix subdirectory"}
+    end
+
+    test "honors the `prefix` option in both the check and the remedy with a zero exit status" do
+      expect(
+        Medic.Cmd.MockSystemCmd,
+        :cmd,
+        fn "npm", ["ls", "--prefer-offline", "--prefix", "subdirectory"], stderr_to_stdout: true ->
+          {@failure_output, 0}
+        end
+      )
+
+      assert Medic.Checks.NPM.all_packages_installed?(prefix: "subdirectory") ==
+               {:error, String.trim(@failure_output), "npm ci --prefix subdirectory"}
+    end
+
+    test "does not include --prefix when set to nil" do
+      expect(
+        Medic.Cmd.MockSystemCmd,
+        :cmd,
+        fn "npm", ["ls", "--prefer-offline"], stderr_to_stdout: true ->
+          {@failure_output, 1}
+        end
+      )
+
+      assert Medic.Checks.NPM.all_packages_installed?(prefix: nil) ==
+               {:error, String.trim(@failure_output), "npm ci"}
     end
   end
 
@@ -79,7 +118,7 @@ defmodule Medic.Checks.NpmTest do
       expect(
         Medic.Cmd.MockSystemCmd,
         :cmd,
-        fn "npm", ["list", "--prefix", "assets", "--dev"], [] ->
+        fn "npm", ["list", "--dev", "--prefix", "assets"], [] ->
           {@failure_output, 1}
         end
       )
@@ -91,12 +130,50 @@ defmodule Medic.Checks.NpmTest do
       expect(
         Medic.Cmd.MockSystemCmd,
         :cmd,
-        fn "npm", ["list", "--prefix", "assets", "--dev"], cd: "server" ->
+        fn "npm", ["list", "--dev", "--prefix", "assets"], cd: "server" ->
           {@failure_output, 1}
         end
       )
 
       assert Medic.Checks.NPM.any_packages_installed?(cd: "server") == {:error, String.trim(@failure_output), "(cd server && npm ci --prefix assets)"}
+    end
+
+    test "honors the `prefix` option in both the check and the remedy with a nonzero exit status" do
+      expect(
+        Medic.Cmd.MockSystemCmd,
+        :cmd,
+        fn "npm", ["list", "--dev", "--prefix", "subdirectory"], [] ->
+          {@failure_output, 1}
+        end
+      )
+
+      assert Medic.Checks.NPM.any_packages_installed?(prefix: "subdirectory") ==
+               {:error, String.trim(@failure_output), "npm ci --prefix subdirectory"}
+    end
+
+    test "honors the `prefix` option in both the check and the remedy with a zero exit status" do
+      expect(
+        Medic.Cmd.MockSystemCmd,
+        :cmd,
+        fn "npm", ["list", "--dev", "--prefix", "subdirectory"], [] ->
+          {@failure_output, 0}
+        end
+      )
+
+      assert Medic.Checks.NPM.any_packages_installed?(prefix: "subdirectory") == :ok
+    end
+
+    test "does not include --prefix when set to nil" do
+      expect(
+        Medic.Cmd.MockSystemCmd,
+        :cmd,
+        fn "npm", ["list", "--dev"], [] ->
+          {@failure_output, 1}
+        end
+      )
+
+      assert Medic.Checks.NPM.any_packages_installed?(prefix: nil) ==
+               {:error, String.trim(@failure_output), "npm ci"}
     end
   end
 end
