@@ -73,7 +73,7 @@ defmodule Medic.Checks.Hex do
       {:ok, directory} ->
         {output, 0} = System.cmd("mix", ["deps"], cd: directory)
 
-        if output =~ "the dependency is not available",
+        if out_of_date?(output),
           do: {:error, output, "(cd #{directory} && mix deps.get)"},
           else: :ok
 
@@ -83,6 +83,14 @@ defmodule Medic.Checks.Hex do
         if output =~ "the dependency is not available",
           do: {:error, output, "mix deps.get"},
           else: :ok
+    end
+  end
+
+  defp out_of_date?(deps_output) do
+    cond do
+      deps_output =~ "dependency is not available" -> true
+      deps_output =~ "dependency is out of date" -> true
+      true -> false
     end
   end
 
