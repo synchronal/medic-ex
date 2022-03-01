@@ -5,6 +5,14 @@ defmodule GenMedic.MixProject do
   Medic project generator.
 
   Adds necessary Medic support files to a project.
+
+  ## Installation
+
+  mix archive.install hex gen_medic
+
+  ## Usage
+
+  mix gen.medic
   """
   @medic_url "https://hex.pm/packages/medic"
   @scm_url "https://github.com/geometerio/medic"

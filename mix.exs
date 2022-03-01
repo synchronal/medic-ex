@@ -1,14 +1,29 @@
 defmodule Medic.MixProject do
   use Mix.Project
 
+  @description """
+  Automation for setting up a project for development.
+
+  ## Installation
+
+  mix archive.install hex gen_medic
+  mix gen.medic
+
+  ## Usage
+
+  bin/dev/doctor
+  bin/dev/update
+  bin/dev/test
+  """
   @gen_medic_url "https://hex.pm/packages/gen_medic"
   @scm_url "https://github.com/geometerio/medic"
   @version "1.5.1"
+
   def project do
     [
       app: :medic,
       deps: deps(),
-      description: "Checks for setting up development environments",
+      description: @description,
       dialyzer: dialyzer(),
       docs: docs(),
       elixir: "~> 1.12",
