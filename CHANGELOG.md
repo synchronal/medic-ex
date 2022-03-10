@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## 1.6.1
+
+- `Medic.Checks.Postgres.correct_data_directory?` and `Medic.Checks.Postgres.running?` now accept a `remedy` option
+  in case the default value is not sufficient.
+
+## 1.6.0
+
+- NPM checks accept :prefix option to specify directory (defaulting to assets)
+
 ## 1.5.1
 
 - Fix bug in NPM check's handling of `cd` option.
