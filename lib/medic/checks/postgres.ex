@@ -11,6 +11,8 @@ defmodule Medic.Checks.Postgres do
       {Check.Postgres, :database_exists?, ["my_db"]}
   """
 
+  @default_data_dir "./priv/postgres/data"
+
   @doc """
   Checks that the named database exists in the running Postgres instance.
 
@@ -64,34 +66,53 @@ defmodule Medic.Checks.Postgres do
 
   @doc """
   Checks that the running instance of Postgres has the expected data directory.
-  If run with no arguments, this expects that the data directory is located at `.priv/postgres/data`
+
+  If run with no arguments, this expects that the data directory is located at `#{@default_data_dir}`
   within the current project.
+
+  If run with one argument, the argument can be:
+    * A path to the data directory, or
+    * A keyword list with one or more of the following keys:
+      * `data_directory`: the path to the data directory
+      * `remedy`: the remedy as a string
 
   ## Usage
 
-      {Medic.Checks.Postgres, :correct_data_directory}
-      {Medic.Checks.Postgres, :correct_data_directory, ["/path/to/data/directory"]}
+      {Medic.Checks.Postgres, :correct_data_directory?}
+      {Medic.Checks.Postgres, :correct_data_directory?, ["/path/to/data/directory"]}
+      {Medic.Checks.Postgres, :correct_data_directory?, [data_directory: "/path/to/data/directory", remedy: "bin/dev/db-restart"]}
 
   """
-  @spec correct_data_directory?(Path.t()) :: Medic.Check.check_return_t()
-  def correct_data_directory?(path \\ "./priv/postgres/data") do
-    {output, 0} = System.cmd("psql", ["-U", "postgres", "-tA", "-c", "SHOW data_directory;"], stderr_to_stdout: true)
+  @spec correct_data_directory?(Path.t() | list()) :: Medic.Check.check_return_t()
+  def correct_data_directory?(path_or_opts \\ @default_data_dir)
 
-    expected_data_dir = Path.expand(path)
+  def correct_data_directory?(path) when is_binary(path) do
+    correct_data_directory?(data_directory: path)
+  end
 
-    if String.trim(output) == expected_data_dir,
+  def correct_data_directory?(opts) when is_list(opts) do
+    expected_data_dir = opts |> Keyword.get(:data_directory, @default_data_dir) |> Path.expand()
+    remedy = opts |> Keyword.get(:remedy, "# start postgres from #{expected_data_dir}")
+
+    {actual_data_dir, 0} = System.cmd("psql", ["-U", "postgres", "-tA", "-c", "SHOW data_directory;"], stderr_to_stdout: true)
+
+    if String.trim(actual_data_dir) == expected_data_dir,
       do: :ok,
-      else: {:error, "expected data directory to be #{expected_data_dir} but it was #{output}", "# start postgres from #{path}"}
+      else: {:error, "expected data directory to be #{expected_data_dir} but it was #{actual_data_dir}", remedy}
   end
 
   @doc """
   Checks whether Postgres is running, by attempting to list all databases.
+
+  Options:
+    * `remedy`: the remedy as a string
+
   """
-  @spec running?() :: Medic.Check.check_return_t()
-  def running? do
+  @spec running?(list()) :: Medic.Check.check_return_t()
+  def running?(opts \\ []) do
     case databases() do
       {:ok, _list} -> :ok
-      {:error, output} -> {:error, output, "# start postgres"}
+      {:error, output} -> {:error, output, Keyword.get(opts, :remedy, "# start postgres")}
     end
   end
 
