@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `Medic.Test.run` can take a list of options which are then appended to the `mix test` command.
+
 ## 1.6.1
 
 - `Medic.Checks.Postgres.correct_data_directory?` and `Medic.Checks.Postgres.running?` now accept a `remedy` option
