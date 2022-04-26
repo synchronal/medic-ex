@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.7.0
+
 - `Medic.Test.run` can take a list of options which are then appended to the `mix test` command.
 
 ## 1.6.1
