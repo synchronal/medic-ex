@@ -1,12 +1,13 @@
 *.ez
 .medic/.doctor.out
 .medic/skipped
+.nova
 /.fetch
-/_build/
 /cover/
 /deps/
 /doc/
 /priv/plts/
 /tmp
+/_build/
 erl_crash.dump
 medic-*.tar
