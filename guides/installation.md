@@ -59,7 +59,7 @@ To use medic from GitHub, change `.medic/require.exs` as follows:
 
 ```elixir
 Mix.install([
-  {:medic, github: "geometerio/medic", force: true}
+  {:medic, github: "synchronal/medic", force: true}
 ])
 ```
 

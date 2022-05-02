@@ -15,7 +15,7 @@ defmodule GenMedic.MixProject do
   mix gen.medic
   """
   @medic_url "https://hex.pm/packages/medic"
-  @scm_url "https://github.com/geometerio/medic"
+  @scm_url "https://github.com/synchronal/medic"
   @version "1.7.0"
 
   def project do
@@ -59,7 +59,9 @@ defmodule GenMedic.MixProject do
   defp package do
     [
       maintainers: [
-        "Geometer LLC"
+        "synchronal.dev",
+        "Erik Hanson",
+        "Eric Saxby"
       ],
       licenses: ["MIT"],
       links: %{"GitHub" => @scm_url, "Medic" => @medic_url},

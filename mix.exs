@@ -16,7 +16,7 @@ defmodule Medic.MixProject do
   bin/dev/test
   """
   @gen_medic_url "https://hex.pm/packages/gen_medic"
-  @scm_url "https://github.com/geometerio/medic"
+  @scm_url "https://github.com/synchronal/medic"
   @version "1.7.0"
 
   def project do
@@ -114,7 +114,7 @@ defmodule Medic.MixProject do
   defp package do
     [
       licenses: ["MIT"],
-      maintainers: ["Geometer"],
+      maintainers: ["synchronal.dev", "Erik Hanson", "Eric Saxby"],
       links: %{"GitHub" => @scm_url, "Generators" => @gen_medic_url}
     ]
   end
