@@ -190,3 +190,9 @@ jobs:
         with:
           name: medic
           key: ${{ secrets.HEX_PM_KEY }}
+      - name: Publish to gen.medic Hex
+        uses: synchronal/hex-publish-action@v1
+        with:
+          name: gen_medic
+          key: ${{ secrets.HEX_PM_KEY }}
+          working-directory: installer
