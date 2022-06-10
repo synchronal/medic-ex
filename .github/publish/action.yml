@@ -44,7 +44,7 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: |
         name=${{ inputs.name }}
-        version=$(grep "@version \"" mix.exs | cut -d "\"" -f 2)
+        version=$(elixir -S mix run --no-start -e "IO.puts(Application.spec(:${name})[:vsn])")
 
         echo "::group::Local version"
         echo "${version}"
