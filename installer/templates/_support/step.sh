@@ -15,7 +15,7 @@ step() {
     cecho --bold-bright-green "OK"
   else
     cecho --red "FAILED"
-    cecho --red $output
+    echo -e "${output}"
     exit
   fi
 }
