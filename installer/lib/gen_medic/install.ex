@@ -20,8 +20,11 @@ defmodule GenMedic.Install do
   ]
 
   template :bin, [
+    {:sh, "bin/dev/audit", "bin/dev/audit"},
     {:sh, "bin/dev/docs", "bin/dev/docs"},
     {:sh, "bin/dev/doctor", "bin/dev/doctor"},
+    {:sh, "bin/dev/format", "bin/dev/format"},
+    {:sh, "bin/dev/shipit", "bin/dev/shipit"},
     {:sh, "bin/dev/start", "bin/dev/start"},
     {:sh, "bin/dev/test", "bin/dev/test"},
     {:sh, "bin/dev/update", "bin/dev/update"}
