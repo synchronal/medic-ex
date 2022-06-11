@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 1.7.2
+
+- `mix gen.medic` installs `audit`, `format`, and `shipit` scripts.
+- Fix the `step` bash to output multiline text on check failures.
+
+## 1.7.1
+
+- Update dependencies.
+- Update source links.
+
 ## 1.7.0
 
 - `Medic.Test.run` can take a list of options which are then appended to the `mix test` command.
