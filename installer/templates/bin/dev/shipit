@@ -13,4 +13,13 @@ bin/dev/test
 
 step "Pushing" "git push origin HEAD"
 
-cecho --bright-green "\nDone!" --bright-yellow "Check CI at" --bright-bold-white "https://github.com/synchronal/medic/actions"
+set +e
+origin=$(git remote get-url origin 2>&1)
+set +e
+
+if [ $? -eq 0 ]; then
+  origin=$(echo "${origin}" | sed s^:^/^ | sed s^git@^https://^ | sed s^\.git$^^)
+  cecho --bright-green "\nDone!" --bright-yellow "Check CI at" --bright-bold-white "${origin}/actions"
+else
+  cecho --bright-green "\nDone!"
+fi
