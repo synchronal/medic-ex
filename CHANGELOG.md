@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.7.3
+
 - Bash `step` function exits with non-zero status code on failure.
 - Bash `check` function exits with the check's exit code on failure.
 
