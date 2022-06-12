@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Bash `step` function exits with non-zero status code on failure.
+- Bash `check` function exits with the check's exit code on failure.
+
 ## 1.7.2
 
 - `mix gen.medic` installs `audit`, `format`, and `shipit` scripts.
