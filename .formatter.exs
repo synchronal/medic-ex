@@ -1,6 +1,11 @@
 # Used by "mix format"
 [
-  inputs: ["{mix,.formatter}.exs", "{config,lib,test,installer}/**/*.{ex,exs}"],
+  inputs: [
+    "{mix,.formatter}.exs",
+    "{config,lib,test,installer}/**/*.{ex,exs}",
+    "guides/*.{md,markdown}"
+  ],
   line_length: 150,
-  locals_without_parens: [template: :*]
+  locals_without_parens: [template: :*],
+  plugins: [MarkdownFormatter]
 ]
