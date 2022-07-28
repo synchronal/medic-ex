@@ -96,10 +96,16 @@ defmodule Medic.Checks.Hex do
 
   defp rebar_path do
     {elixir_path, 0} = System.cmd("asdf", ["which", "elixir"])
-    {elixir_root, _} = elixir_path |> String.trim() |> Path.split() |> Enum.split(-2)
+    elixir_root = Path.expand(Path.join(elixir_path, "../.."))
 
-    elixir_root
-    |> Path.join()
-    |> Path.join([".mix/rebar"])
+    case System.version() |> Version.parse() do
+      {:ok, %Version{major: 1, minor: minor}} when minor <= 13 ->
+        elixir_root
+        |> Path.join(".mix/rebar")
+
+      {:ok, %Version{major: major, minor: minor}} ->
+        elixir_root
+        |> Path.join(".mix/elixir/#{major}-#{minor}/rebar3")
+    end
   end
 end

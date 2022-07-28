@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fix `Medic.Checks.Hex.local_rebar_installed?` check for Elixir 1.14.
+
 ## 1.7.3
 
 - Bash `step` function exits with non-zero status code on failure.
