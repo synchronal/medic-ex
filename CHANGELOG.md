@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.7.4
+
 - Fix `Medic.Checks.Hex.local_rebar_installed?` check for Elixir 1.14.
 
 ## 1.7.3
