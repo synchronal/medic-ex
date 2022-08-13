@@ -35,16 +35,19 @@ defmodule Medic.Checks.Postgres do
   """
   @spec correct_version_running?() :: Medic.Check.check_return_t()
   def correct_version_running? do
-    {:ok, project_version} = get_project_version()
-    {:ok, running_version} = get_running_version()
-
-    if project_version == running_version,
-      do: :ok,
-      else: {
-        :error,
-        "running database version #{running_version} does not match project version #{project_version}",
-        "bin/dev/db-restart"
-      }
+    with {:ok, project_version} <- get_project_version(),
+         {:ok, running_version} <- get_running_version() do
+      if project_version == running_version,
+        do: :ok,
+        else: {
+          :error,
+          "running database version #{running_version} does not match project version #{project_version}",
+          "bin/dev/db-restart"
+        }
+    else
+      {:error, _} ->
+        {:error, "Unable to determine desired or running postgres. Please check that the desired version is running.", "# remediate"}
+    end
   end
 
   @doc """

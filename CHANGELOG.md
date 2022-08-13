@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Return an error when `Medic.Checks.Postgres.correct_version_running?` can't determine either
+  the desired or the running version.
+
 ## 1.7.4
 
 - Fix `Medic.Checks.Hex.local_rebar_installed?` check for Elixir 1.14.
