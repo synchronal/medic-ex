@@ -19,10 +19,11 @@ defmodule Medic.Checks.Postgres do
   ## Usage
 
       {Medic.Checks.Postgres, :database_exists?, ["my_db_dev"]}
+      {Medic.Checks.Postgres, :database_exists?, ["my_db_dev", username: "postgres"]}
   """
   @spec database_exists?(binary()) :: Medic.Check.check_return_t()
-  def database_exists?(database_name) do
-    {:ok, found_databases} = databases()
+  def database_exists?(database_name, opts \\ []) do
+    {:ok, found_databases} = databases(List.wrap(opts))
 
     if database_name in found_databases,
       do: :ok,
@@ -51,16 +52,22 @@ defmodule Medic.Checks.Postgres do
   end
 
   @doc """
-  Checks that a user `postgres` has been created in the running instance.
+  Checks that a user has been created in the running instance. This check defaults
+  to the username `postgres` if not explicitly given.
+
+  ## Usage
+
+      {Medic.Checks.Postgres, :role_exists?}
+      {Medic.Checks.Postgres, :role_exists?, ["postgres"]}
   """
-  @spec role_exists?() :: Medic.Check.check_return_t()
-  def role_exists? do
-    System.cmd("psql", ["-A", "-c", "\\du", "postgres"], stderr_to_stdout: true)
+  @spec role_exists?(binary()) :: Medic.Check.check_return_t()
+  def role_exists?(username \\ "postgres") do
+    System.cmd("psql", ["-A", "-c", "\\du", username], stderr_to_stdout: true)
     |> case do
       {output, 0} ->
         if output =~ "postgres",
           do: :ok,
-          else: {:error, "postgres role does not exist", "createuser -s postgres -U \$USER"}
+          else: {:error, "postgres role does not exist", "createuser -s #{username} -U \$USER"}
 
       {output, _} ->
         {:error, output, "# start postgres"}
@@ -78,11 +85,13 @@ defmodule Medic.Checks.Postgres do
     * A keyword list with one or more of the following keys:
       * `data_directory`: the path to the data directory
       * `remedy`: the remedy as a string
+      * `username`: username to use when calling psql
 
   ## Usage
 
       {Medic.Checks.Postgres, :correct_data_directory?}
       {Medic.Checks.Postgres, :correct_data_directory?, ["/path/to/data/directory"]}
+      {Medic.Checks.Postgres, :correct_data_directory?, [data_directory: "/path/to/data/directory", username: "postgres"]}
       {Medic.Checks.Postgres, :correct_data_directory?, [data_directory: "/path/to/data/directory", remedy: "bin/dev/db-restart"]}
 
   """
@@ -97,7 +106,7 @@ defmodule Medic.Checks.Postgres do
     expected_data_dir = opts |> Keyword.get(:data_directory, @default_data_dir) |> Path.expand()
     remedy = opts |> Keyword.get(:remedy, "# start postgres from #{expected_data_dir}")
 
-    {actual_data_dir, 0} = System.cmd("psql", ["-U", "postgres", "-tA", "-c", "SHOW data_directory;"], stderr_to_stdout: true)
+    {actual_data_dir, 0} = System.cmd("psql", ["-tA", "-c", "SHOW data_directory;" | psql_opts(opts)], stderr_to_stdout: true)
 
     if String.trim(actual_data_dir) == expected_data_dir,
       do: :ok,
@@ -109,18 +118,19 @@ defmodule Medic.Checks.Postgres do
 
   Options:
     * `remedy`: the remedy as a string
+    * `username`: username to use when calling psql
 
   """
   @spec running?(list()) :: Medic.Check.check_return_t()
   def running?(opts \\ []) do
-    case databases() do
+    case databases(opts) do
       {:ok, _list} -> :ok
       {:error, output} -> {:error, output, Keyword.get(opts, :remedy, "# start postgres")}
     end
   end
 
-  def databases do
-    case System.cmd("psql", ["-l", "-x"], stderr_to_stdout: true) do
+  def databases(opts) do
+    case System.cmd("psql", ["-l", "-x" | psql_opts(opts)], stderr_to_stdout: true) do
       {output, 0} ->
         {:ok, Regex.scan(~r"^Name\s+\| (\w+)\s*$"m, output) |> Enum.map(&List.last/1)}
 
@@ -158,5 +168,12 @@ defmodule Medic.Checks.Postgres do
 
   defp ok(result) do
     {:ok, result}
+  end
+
+  defp psql_opts(opts) do
+    case Keyword.fetch(opts, :username) do
+      {:ok, username} -> ["-U", username]
+      :error -> ["-U", "postgres"]
+    end
   end
 end

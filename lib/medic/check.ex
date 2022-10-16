@@ -68,7 +68,7 @@ defmodule Medic.Check do
       if Keyword.keyword?(args) do
         args |> Keyword.values() |> Enum.join("+")
       else
-        args |> Enum.join("+")
+        args |> Enum.map_join("+", &args_safe/1)
       end
 
     filename =
@@ -89,5 +89,14 @@ defmodule Medic.Check do
     else
       args
     end
+  end
+
+  defp args_safe(value) when is_binary(value), do: value
+  defp args_safe({_key, value}), do: args_safe(value)
+
+  defp args_safe(values) when is_list(values) do
+    if Keyword.keyword?(values),
+      do: Keyword.values(values),
+      else: Enum.join(values, "-")
   end
 end

@@ -60,9 +60,12 @@ defmodule Medic.UI do
     if Keyword.keyword?(details) do
       [" (", :yellow, inspect(details), :cyan, ")"]
     else
-      [" (", :yellow, details |> List.wrap() |> Enum.intersperse(" "), :cyan, ")"]
+      [" (", :yellow, details |> List.wrap() |> Enum.map(&flatten_tuples/1) |> Enum.intersperse(", "), :cyan, ")"]
     end
   end
+
+  defp flatten_tuples({key, value}), do: [to_string(key), ": ", value]
+  defp flatten_tuples(value) when is_binary(value), do: value
 
   defp format(chardata) when is_list(chardata),
     do: IO.ANSI.format(chardata, true)
