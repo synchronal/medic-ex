@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 1.8.0
+
+- Postgres checks accept `:username` to pass to `psql`.
+- Checks can handle arguments in the format, `binary, key: value`.
+
+## 1.7.5
+
 - Return an error when `Medic.Checks.Postgres.correct_version_running?` can't determine either
   the desired or the running version.
 
