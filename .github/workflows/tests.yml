@@ -203,3 +203,4 @@ jobs:
           name: gen_medic
           key: ${{ secrets.HEX_PM_KEY }}
           working-directory: installer
+          tag-release: false
