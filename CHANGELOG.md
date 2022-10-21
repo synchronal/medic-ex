@@ -3,6 +3,7 @@
 ## Unreleased
 
 - `mix.gen.medic` template for `doctor.exs` has fewer checks enabled.
+- More Postgres checks accept a `:remedy` option.
 
 ## 1.8.0
 

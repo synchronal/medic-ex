@@ -33,9 +33,12 @@ defmodule Medic.Checks.Postgres do
   @doc """
   Checks that the running Postgres database matches the version defined
   in ASDF's `.tool-versions` file.
+
+  Options:
+    * `remedy`: the remedy as a string
   """
   @spec correct_version_running?() :: Medic.Check.check_return_t()
-  def correct_version_running? do
+  def correct_version_running?(opts \\ []) do
     with {:ok, project_version} <- get_project_version(),
          {:ok, running_version} <- get_running_version() do
       if project_version == running_version,
@@ -43,7 +46,7 @@ defmodule Medic.Checks.Postgres do
         else: {
           :error,
           "running database version #{running_version} does not match project version #{project_version}",
-          "bin/dev/db-restart"
+          Keyword.get(opts, :remedy, "bin/dev/db-restart")
         }
     else
       {:error, _} ->
@@ -104,13 +107,18 @@ defmodule Medic.Checks.Postgres do
 
   def correct_data_directory?(opts) when is_list(opts) do
     expected_data_dir = opts |> Keyword.get(:data_directory, @default_data_dir) |> Path.expand()
-    remedy = opts |> Keyword.get(:remedy, "# start postgres from #{expected_data_dir}")
 
     {actual_data_dir, 0} = System.cmd("psql", ["-tA", "-c", "SHOW data_directory;" | psql_opts(opts)], stderr_to_stdout: true)
 
-    if String.trim(actual_data_dir) == expected_data_dir,
-      do: :ok,
-      else: {:error, "expected data directory to be #{expected_data_dir} but it was #{actual_data_dir}", remedy}
+    if String.trim(actual_data_dir) == expected_data_dir do
+      :ok
+    else
+      {
+        :error,
+        "expected data directory to be #{expected_data_dir} but it was #{actual_data_dir}",
+        Keyword.get(opts, :remedy, "# start postgres from #{expected_data_dir}")
+      }
+    end
   end
 
   @doc """
@@ -129,7 +137,9 @@ defmodule Medic.Checks.Postgres do
     end
   end
 
-  def databases(opts) do
+  # # #
+
+  defp databases(opts) do
     case System.cmd("psql", ["-l", "-x" | psql_opts(opts)], stderr_to_stdout: true) do
       {output, 0} ->
         {:ok, Regex.scan(~r"^Name\s+\| (\w+)\s*$"m, output) |> Enum.map(&List.last/1)}
