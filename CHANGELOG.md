@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `mix.gen.medic` template for `doctor.exs` has fewer checks enabled.
+
 ## 1.8.0
 
 - Postgres checks accept `:username` to pass to `psql`.
