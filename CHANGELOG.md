@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add libpq environment variable note to postgres check documentation.
+
 ## 1.8.1
 
 - `mix.gen.medic` template for `doctor.exs` has fewer checks enabled.

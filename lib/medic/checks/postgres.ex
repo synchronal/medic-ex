@@ -9,6 +9,16 @@ defmodule Medic.Checks.Postgres do
       {Check.Postgres, :role_exists?},
       {Check.Postgres, :correct_data_directory?},
       {Check.Postgres, :database_exists?, ["my_db"]}
+
+  ## Environment variables
+
+  Medic uses `psql` in order to connect to Postgres for its checks. When using
+  a non-standard configuration, such as database port, consider setting environment
+  variables such as `PGPORT` (in `.envrc` or `.envrc.local`) to configure `psql` if
+  possible.
+
+  These environment variables are documented in
+  [libpq's documentation](https://www.postgresql.org/docs/current/libpq-envars.html).
   """
 
   @default_data_dir "./priv/postgres/data"
