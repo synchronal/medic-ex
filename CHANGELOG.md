@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.8.2
+
 - `:build_mix` compiles deps for test as well as dev. This makes sure that any libraries including formatters
   are compiled prior to those formatters being run from LSP (which is often run in MIX_ENV=test).
 - Add libpq environment variable note to postgres check documentation.
