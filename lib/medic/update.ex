@@ -30,6 +30,7 @@ defmodule Medic.Update do
     else
       outdated_libs = outdated |> Enum.map(& &1.name)
       run_command(["Rebuilding mix deps", "mix", ["deps.compile" | outdated_libs]])
+      run_command(["Rebuilding mix deps", "mix", ["deps.compile" | outdated_libs], [env: [{"MIX_ENV", "test"}]]])
     end
   end
 
