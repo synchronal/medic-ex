@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fix `:build_mix` update step to split dev/test compilation, to handle deps that are only in one or the other.
+
 ## 1.8.2
 
 - `:build_mix` compiles deps for test as well as dev. This makes sure that any libraries including formatters

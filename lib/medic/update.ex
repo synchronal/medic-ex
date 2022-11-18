@@ -21,16 +21,24 @@ defmodule Medic.Update do
   def run, do: read_commands() |> Enum.each(&run_command/1)
 
   defp run_command(:build_mix) do
-    {output, 0} = System.cmd("mix", ["deps"])
-    outdated = Medic.Support.Hex.split(output) |> Enum.filter(fn dep -> dep.status == :outdated end)
+    {dev_output, 0} = System.cmd("mix", ["deps"], env: [{"MIX_ENV", "dev"}])
+    {test_output, 0} = System.cmd("mix", ["deps"], env: [{"MIX_ENV", "test"}])
+    dev_outdated = Medic.Support.Hex.split(dev_output) |> Enum.filter(fn dep -> dep.status == :outdated end)
+    test_outdated = Medic.Support.Hex.split(test_output) |> Enum.filter(fn dep -> dep.status == :outdated end)
 
-    if outdated == [] do
+    if dev_outdated == [] && test_outdated == [] do
       UI.heading("Rebuilding mix deps", ["mix", "deps.compile"], inline: true)
       UI.skipped()
-    else
-      outdated_libs = outdated |> Enum.map(& &1.name)
-      run_command(["Rebuilding mix deps", "mix", ["deps.compile" | outdated_libs]])
-      run_command(["Rebuilding mix deps", "mix", ["deps.compile" | outdated_libs], [env: [{"MIX_ENV", "test"}]]])
+    end
+
+    if dev_outdated != [] do
+      dev_outdated_libs = dev_outdated |> Enum.map(& &1.name)
+      run_command(["Rebuilding mix deps (dev)", "mix", ["deps.compile" | dev_outdated_libs], [env: [{"MIX_ENV", "dev"}]]])
+    end
+
+    if test_outdated != [] do
+      test_outdated_libs = test_outdated |> Enum.map(& &1.name)
+      run_command(["Rebuilding mix deps (test)", "mix", ["deps.compile" | test_outdated_libs], [env: [{"MIX_ENV", "test"}]]])
     end
   end
 
