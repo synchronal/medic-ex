@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.8.3
+
 - Fix `:build_mix` update step to split dev/test compilation, to handle deps that are only in one or the other.
 
 ## 1.8.2
