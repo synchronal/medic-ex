@@ -44,10 +44,7 @@ defmodule Medic.Checks.Corepack do
           do: :ok,
           else: {:error, "NPM shim #{shim} not found", "npm install -g #{shim}"}
 
-      {_error, 1} ->
-        {:error, "NPM shim #{shim} not found", "npm install -g #{shim}"}
-
-      {_error, 254} ->
+      {_error, _exit_code} ->
         {:error, "NPM shim #{shim} not found", "npm install -g #{shim}"}
     end
   end
