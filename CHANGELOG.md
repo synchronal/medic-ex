@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- NPM uses `--include=dev` instead of `--dev`.
+- Corepack check handles any error code.
+
 ## 1.8.3
 
 - Fix `:build_mix` update step to split dev/test compilation, to handle deps that are only in one or the other.
