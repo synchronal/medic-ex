@@ -118,7 +118,7 @@ defmodule Medic.Checks.NpmTest do
       expect(
         Medic.Cmd.MockSystemCmd,
         :cmd,
-        fn "npm", ["list", "--dev", "--prefix", "assets"], [] ->
+        fn "npm", ["list", "--include=dev", "--prefix", "assets"], [] ->
           {@failure_output, 1}
         end
       )
@@ -130,7 +130,7 @@ defmodule Medic.Checks.NpmTest do
       expect(
         Medic.Cmd.MockSystemCmd,
         :cmd,
-        fn "npm", ["list", "--dev", "--prefix", "assets"], cd: "server" ->
+        fn "npm", ["list", "--include=dev", "--prefix", "assets"], cd: "server" ->
           {@failure_output, 1}
         end
       )
@@ -142,7 +142,7 @@ defmodule Medic.Checks.NpmTest do
       expect(
         Medic.Cmd.MockSystemCmd,
         :cmd,
-        fn "npm", ["list", "--dev", "--prefix", "subdirectory"], [] ->
+        fn "npm", ["list", "--include=dev", "--prefix", "subdirectory"], [] ->
           {@failure_output, 1}
         end
       )
@@ -155,7 +155,7 @@ defmodule Medic.Checks.NpmTest do
       expect(
         Medic.Cmd.MockSystemCmd,
         :cmd,
-        fn "npm", ["list", "--dev", "--prefix", "subdirectory"], [] ->
+        fn "npm", ["list", "--include=dev", "--prefix", "subdirectory"], [] ->
           {@failure_output, 0}
         end
       )
@@ -167,7 +167,7 @@ defmodule Medic.Checks.NpmTest do
       expect(
         Medic.Cmd.MockSystemCmd,
         :cmd,
-        fn "npm", ["list", "--dev"], [] ->
+        fn "npm", ["list", "--include=dev"], [] ->
           {@failure_output, 1}
         end
       )

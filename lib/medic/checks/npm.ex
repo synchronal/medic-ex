@@ -70,7 +70,7 @@ defmodule Medic.Checks.NPM do
   def any_packages_installed?(opts \\ []) do
     dir = Keyword.get(opts, :cd)
 
-    Medic.Cmd.exec("npm", ["list", "--dev"] ++ default_args(opts), Medic.Extra.Keyword.compact(cd: dir))
+    Medic.Cmd.exec("npm", ["list", "--include=dev"] ++ default_args(opts), Medic.Extra.Keyword.compact(cd: dir))
     |> case do
       {_output, 0} -> :ok
       {output, _status_code} -> {:error, output, remedy_in_dir(dir, Enum.join(~w[npm ci] ++ default_args(opts), " "))}
