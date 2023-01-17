@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.8.5
+
 - Local checks are reloaded after pulling code during update.
 
 ## 1.8.4
