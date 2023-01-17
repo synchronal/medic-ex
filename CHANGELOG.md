@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Local checks are reloaded after pulling code during update.
+
+## 1.8.4
+
 - NPM uses `--include=dev` instead of `--dev`.
 - Corepack check handles any error code.
 
