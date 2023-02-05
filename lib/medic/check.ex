@@ -92,6 +92,7 @@ defmodule Medic.Check do
   end
 
   defp args_safe(value) when is_binary(value), do: value
+  defp args_safe(value) when is_atom(value), do: value
   defp args_safe({_key, value}), do: args_safe(value)
 
   defp args_safe(values) when is_list(values) do

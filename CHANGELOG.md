@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Checks may include atoms in arguments.
+
 ## 1.8.5
 
 - Local checks are reloaded after pulling code during update.

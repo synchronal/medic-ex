@@ -66,6 +66,7 @@ defmodule Medic.UI do
 
   defp flatten_tuples({key, value}), do: [to_string(key), ": ", value]
   defp flatten_tuples(value) when is_binary(value), do: value
+  defp flatten_tuples(value) when is_atom(value), do: ":#{value}"
 
   defp format(chardata) when is_list(chardata),
     do: IO.ANSI.format(chardata, true)
