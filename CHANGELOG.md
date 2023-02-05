@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.8.6
+
 - Checks may include atoms in arguments.
 
 ## 1.8.5
