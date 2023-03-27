@@ -2,9 +2,13 @@
 
 ## Unreleased
 
-## 1.8.7
+## 1.8.8
 
 - `Medic.Checks.Postgres.database_exists?` accepts a `:remedy` option.
+
+## 1.8.7
+
+** Reverted
 
 ## 1.8.6
 
