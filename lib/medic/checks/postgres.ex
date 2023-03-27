@@ -30,14 +30,16 @@ defmodule Medic.Checks.Postgres do
 
       {Medic.Checks.Postgres, :database_exists?, ["my_db_dev"]}
       {Medic.Checks.Postgres, :database_exists?, ["my_db_dev", username: "postgres"]}
+      {Medic.Checks.Postgres, :database_exists?, ["my_db_dev", remedy: "mix ecto.reset"]}
   """
   @spec database_exists?(binary()) :: Medic.Check.check_return_t()
   def database_exists?(database_name, opts \\ []) do
     {:ok, found_databases} = databases(List.wrap(opts))
+    remedy = Keyword.get(opts, :remedy, "mix ecto.setup")
 
     if database_name in found_databases,
       do: :ok,
-      else: {:error, "#{database_name} not found in #{inspect(found_databases)}", "mix ecto.setup"}
+      else: {:error, "#{database_name} not found in #{inspect(found_databases)}", remedy}
   end
 
   @doc """

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `Medic.Checks.Postgres.database_exists?` accepts a `:remedy` option.
+
 ## 1.8.6
 
 - Checks may include atoms in arguments.
