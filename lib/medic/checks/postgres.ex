@@ -35,7 +35,7 @@ defmodule Medic.Checks.Postgres do
   @spec database_exists?(binary()) :: Medic.Check.check_return_t()
   def database_exists?(database_name, opts \\ []) do
     {:ok, found_databases} = databases(List.wrap(opts))
-    remedy = Keyword.get(opts, :remedy, "mix ecto.setup")
+    remedy = Keyword.get(List.wrap(opts), :remedy, "mix ecto.setup")
 
     if database_name in found_databases,
       do: :ok,
