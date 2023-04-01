@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 1.9.1
+
+- Fixed `Medic.Checks.Hosts`
+
 ## 1.9.0
 
 - Added `Medic.Checks.Hosts`

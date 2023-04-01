@@ -16,7 +16,7 @@ defmodule GenMedic.MixProject do
   """
   @medic_url "https://hex.pm/packages/medic"
   @scm_url "https://github.com/synchronal/medic"
-  @version "1.9.0"
+  @version "1.9.1"
 
   def project do
     [
