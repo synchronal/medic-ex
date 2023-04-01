@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 1.9.0
+
+- Added `Medic.Checks.Hosts`
+
 ## 1.8.8
 
 - `Medic.Checks.Postgres.database_exists?` accepts a `:remedy` option.
