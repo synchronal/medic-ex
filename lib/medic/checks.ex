@@ -8,7 +8,8 @@ defmodule Medic.Checks do
   @doc false
   def load_local_files do
     with :ok <- checks_dir_exists?(),
-         {:ok, files} <- File.ls(@checks_dir) do
+         {:ok, files} <- File.ls(@checks_dir),
+         files <- Enum.filter(files, &String.ends_with?(&1, ~w(.ex .exs))) do
       for file <- files do
         Code.require_file(file, @checks_dir)
         :ok

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Only load local checks with `.ex` or `.exs` file extensions.
+
 ## 1.9.1
 
 - Fixed `Medic.Checks.Hosts`
