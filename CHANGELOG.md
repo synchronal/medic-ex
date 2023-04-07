@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.9.2
+
 - Only load local checks with `.ex` or `.exs` file extensions.
 
 ## 1.9.1
