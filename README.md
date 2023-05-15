@@ -1,6 +1,6 @@
 # Medic
 
-[![CI](https://github.com/synchronal/medic/actions/workflows/tests.yml/badge.svg)](https://github.com/synchronal/medic/actions)
+[![CI](https://github.com/synchronal/medic-ex/actions/workflows/tests.yml/badge.svg)](https://github.com/synchronal/medic-ex/actions)
 [![Hex pm](http://img.shields.io/hexpm/v/medic.svg?style=flat)](https://hex.pm/packages/medic)
 
 Doctor checks for setting up development environments.
