@@ -96,7 +96,7 @@ defmodule Medic.Checks.Hex do
   end
 
   def rebar_path do
-    mix_home = System.fetch_env!("MIX_HOME")
+    mix_home = mix_home()
 
     case System.version() |> Version.parse() do
       {:ok, %Version{major: 1, minor: minor}} when minor <= 13 ->
@@ -107,5 +107,9 @@ defmodule Medic.Checks.Hex do
         mix_home
         |> Path.join("elixir/#{major}-#{minor}/rebar3")
     end
+  end
+
+  defp mix_home do
+    System.get_env("MIX_HOME", Path.join(System.get_env("HOME"), ".mix"))
   end
 end
