@@ -1,4 +1,5 @@
 defmodule Medic.Checks.Hex do
+  # @related [tests](test/medic/checks/hex_test.exs)
   @moduledoc """
   Hex installed locally, and mix deps installed.
 
@@ -94,18 +95,17 @@ defmodule Medic.Checks.Hex do
     end
   end
 
-  defp rebar_path do
-    {elixir_path, 0} = System.cmd("asdf", ["which", "elixir"])
-    elixir_root = Path.expand(Path.join(elixir_path, "../.."))
+  def rebar_path do
+    mix_home = System.fetch_env!("MIX_HOME")
 
     case System.version() |> Version.parse() do
       {:ok, %Version{major: 1, minor: minor}} when minor <= 13 ->
-        elixir_root
-        |> Path.join(".mix/rebar")
+        mix_home
+        |> Path.join("rebar")
 
       {:ok, %Version{major: major, minor: minor}} ->
-        elixir_root
-        |> Path.join(".mix/elixir/#{major}-#{minor}/rebar3")
+        mix_home
+        |> Path.join("elixir/#{major}-#{minor}/rebar3")
     end
   end
 end

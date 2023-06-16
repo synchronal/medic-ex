@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `Medic.Checks.Hex.local_rebar_installed?` determined rebar path based on `MIX_HOME`.
+
 ## 1.9.2
 
 - Only load local checks with `.ex` or `.exs` file extensions.
