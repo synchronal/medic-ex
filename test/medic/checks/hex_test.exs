@@ -8,7 +8,11 @@ defmodule Medic.Checks.HexTest do
       original_mix_home = System.get_env("MIX_HOME")
 
       on_exit(fn ->
-        System.put_env("MIX_HOME", original_mix_home)
+        if original_mix_home do
+          System.put_env("MIX_HOME", original_mix_home)
+        else
+          System.delete_env("MIX_HOME")
+        end
       end)
 
       [original_mix_home: original_mix_home]
