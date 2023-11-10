@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `Medic.Checks.Corepack` can be used without asdf.
+
 ## 1.9.3
 
 - `Medic.Checks.Hex.local_rebar_installed?` determined rebar path based on `MIX_HOME`.

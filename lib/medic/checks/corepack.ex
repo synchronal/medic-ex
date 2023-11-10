@@ -4,48 +4,37 @@ defmodule Medic.Checks.Corepack do
   """
 
   def shim_installed?(shim) do
-    with {:ok, node_version} <- node_version(),
-         :ok <- corepack_shim_installed?(node_version, shim) do
-      global_package_installed?(shim)
+    with {:ok, _node_version} <- node_version(),
+         {:ok, _corepack_version} <- corepack_version() do
+      corepack_shim_installed?(shim)
     end
   end
 
   defp node_version do
     case System.cmd("node", ["-v"]) do
       {"v" <> node_version, 0} -> {:ok, String.trim(node_version)}
-      {output, _exit} -> {:error, "Node version not found\n#{output}", "asdf install"}
+      {output, _exit} -> {:error, "Node version not found\n#{output}", "## install nodejs"}
     end
   end
 
-  defp corepack_shim_installed?(node_version, shim) do
-    home = System.fetch_env!("HOME")
+  defp corepack_shim_installed?(shim) do
     [package, _version] = String.split(shim, "@")
 
-    home
-    |> Path.join([
-      ".asdf/installs/nodejs/",
-      node_version,
-      "/lib/node_modules/corepack/shims/",
-      package
-    ])
-    |> File.exists?()
-    |> if(
-      do: :ok,
-      else: {:error, "Corepack #{shim} not found", "corepack enable && corepack prepare #{shim} --activate"}
-    )
+    with {corepack_path, 0} <- System.cmd("which", ["corepack"]),
+         {real_corepack_path, 0} <- System.cmd("realpath", [Path.join(String.trim(corepack_path), "../../shims")]) do
+      if real_corepack_path |> String.trim() |> Path.join(package) |> File.exists?(),
+        do: :ok,
+        else: {:error, "Corepack #{shim} not found", "corepack enable && corepack prepare #{shim} --activate"}
+    else
+      _other ->
+        {:error, "Corepack not found", "## install nodejs"}
+    end
   end
 
-  defp global_package_installed?(shim) do
-    [package, _version] = String.split(shim, "@")
-
-    case System.cmd("npm", ["ls", "-g", package]) do
-      {output, 0} ->
-        if String.contains?(output, shim),
-          do: :ok,
-          else: {:error, "NPM shim #{shim} not found", "npm install -g #{shim}"}
-
-      {_error, _exit_code} ->
-        {:error, "NPM shim #{shim} not found", "npm install -g #{shim}"}
+  defp corepack_version do
+    case System.cmd("corepack", ["-v"]) do
+      {corepack_version, 0} -> {:ok, String.trim(corepack_version)}
+      {output, _exit} -> {:error, "Corepack version not found\n#{output}", "## install nodejs"}
     end
   end
 end
