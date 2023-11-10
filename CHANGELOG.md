@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.10.0
+
 - `Medic.Checks.Corepack` can be used without asdf.
 
 ## 1.9.3
