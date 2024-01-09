@@ -21,6 +21,9 @@ defmodule Medic.Checks.Postgres do
   [libpq's documentation](https://www.postgresql.org/docs/current/libpq-envars.html).
   """
 
+  alias Medic.Sugar
+  alias Medic.Support.RuntimeVersionManager, as: Rvm
+
   @default_data_dir "./priv/postgres/data"
 
   @doc """
@@ -51,7 +54,7 @@ defmodule Medic.Checks.Postgres do
   """
   @spec correct_version_running?() :: Medic.Check.check_return_t()
   def correct_version_running?(opts \\ []) do
-    with {:ok, project_version} <- get_project_version(),
+    with {:ok, project_version} <- Rvm.current("postgres"),
          {:ok, running_version} <- get_running_version() do
       if project_version == running_version,
         do: :ok,
@@ -161,19 +164,6 @@ defmodule Medic.Checks.Postgres do
     end
   end
 
-  defp get_project_version do
-    case System.cmd("asdf", ["current", "postgres"]) do
-      {output, 0} ->
-        output
-        |> String.split(" ", trim: true)
-        |> Enum.at(1)
-        |> ok()
-
-      {output, _} ->
-        {:error, output}
-    end
-  end
-
   defp get_running_version do
     case System.cmd("psql", ["--version"], stderr_to_stdout: true) do
       {output, 0} ->
@@ -181,15 +171,11 @@ defmodule Medic.Checks.Postgres do
         |> String.split(" ", trim: true)
         |> Enum.at(2)
         |> String.trim()
-        |> ok()
+        |> Sugar.ok()
 
       {output, _} ->
         {:error, output}
     end
-  end
-
-  defp ok(result) do
-    {:ok, result}
   end
 
   defp psql_opts(opts) do
