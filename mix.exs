@@ -54,7 +54,7 @@ defmodule Medic.MixProject do
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:markdown_formatter, "~> 0.4", only: [:dev, :test], runtime: false},
       {:mix_audit, "~> 2.0", only: [:dev, :test], runtime: false},
-      {:mox, "~> 1.0.1", only: [:test]}
+      {:mox, "~> 1.1", only: [:test]}
     ]
   end
 
