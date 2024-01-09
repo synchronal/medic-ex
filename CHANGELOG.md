@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add `Medic.Checks.ToolVersions` with same API as `Medic.Checks.Asdf`, but which
+  checks for the existence of either [mise-en-place](https://mise.jdx.dev) or
+  [asdf](https://asdf-vm.com).
+
 ## 1.10.0
 
 - `Medic.Checks.Corepack` can be used without asdf.
