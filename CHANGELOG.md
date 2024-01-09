@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+## 1.11.0
+
+- `bin/dev/doctor` created by the `mix gen.medic` supports either `mise` or `asdf`.
 - Add `Medic.Checks.ToolVersions` with same API as `Medic.Checks.Asdf`, but which
   checks for the existence of either [mise-en-place](https://mise.jdx.dev) or
   [asdf](https://asdf-vm.com).
