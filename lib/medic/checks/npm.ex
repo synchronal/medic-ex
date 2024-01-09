@@ -36,7 +36,7 @@ defmodule Medic.Checks.NPM do
     System.cmd("npm", ["--version"])
     |> case do
       {_output, 0} -> :ok
-      {output, _status_code} -> {:error, output, "# asdf install ; or brew install nodejs"}
+      {output, _status_code} -> {:error, output, "# mise install node; asdf install nodejs ; or brew install nodejs"}
     end
   end
 
