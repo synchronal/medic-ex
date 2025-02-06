@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 2.0.0
+
+- **Breaking change:** Fix asdf check to support asdf 0.16+. When using asdf versions
+  lower than 0.15, medic should be pinned to `~> 1.0`.
+
 ## 1.11.0
 
 - `bin/dev/doctor` created by the `mix gen.medic` supports either `mise` or `asdf`.
