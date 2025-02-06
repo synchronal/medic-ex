@@ -12,7 +12,7 @@ defmodule Medic.Support.RuntimeVersionManager do
             {output, 0} ->
               output
               |> String.split(" ", trim: true)
-              |> Enum.at(1)
+              |> Enum.at(4)
               |> Sugar.ok()
 
             {output, _} ->
