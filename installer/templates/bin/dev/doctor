@@ -26,11 +26,11 @@ elif command -v asdf >/dev/null; then
 fi
 
 check "tool-versions: erlang plugin installed" \
-  "${TOOLS} plugin-list | grep erlang" \
+  "${TOOLS} plugin list | grep erlang" \
   "${TOOLS} plugin add erlang"
 
 check "tool-versions: elixir plugin installed" \
-  "${TOOLS} plugin-list | grep elixir" \
+  "${TOOLS} plugin list | grep elixir" \
   "${TOOLS} plugin add elixir"
 
 check "tool-versions: tools are installed" \
