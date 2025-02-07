@@ -34,6 +34,31 @@ defmodule Medic.Support.RuntimeVersionManagerTest do
 
       assert Medic.Support.RuntimeVersionManager.current("elixir") == {:ok, "1.18.2-thingy"}
     end
+
+    test "returns an error when not installed on asdf 0.16" do
+      resp = """
+      Name            Version         Source                    Installed
+      elixir          1.16.1-otp-26   /Users/sax/.tool-versions false - Run `asdf install elixir 1.16.1-otp-26`
+      """
+
+      expect(Medic.Cmd.MockSystemCmd, :cmd, fn "asdf", ["current", "elixir"], [] ->
+        {resp, 1}
+      end)
+
+      assert Medic.Support.RuntimeVersionManager.current("elixir") ==
+               {:error, String.trim(resp)}
+    end
+
+    test "returns an error when not installed on asdf 0.15 and older" do
+      expect(Medic.Cmd.MockSystemCmd, :cmd, fn "asdf", ["current", "elixir"], [] ->
+        {"""
+         elixir          1.16.1-otp-26   Not installed. Run "asdf install elixir 1.16.1-otp-26"
+         """, 1}
+      end)
+
+      assert Medic.Support.RuntimeVersionManager.current("elixir") ==
+               {:error, ~s|elixir          1.16.1-otp-26   Not installed. Run "asdf install elixir 1.16.1-otp-26"|}
+    end
   end
 
   describe "current with mise" do
