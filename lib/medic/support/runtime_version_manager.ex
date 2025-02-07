@@ -3,16 +3,16 @@ defmodule Medic.Support.RuntimeVersionManager do
   alias Medic.Cmd
   alias Medic.Etc
   alias Medic.Sugar
+  alias Medic.System
 
   def current(plugin) do
     with {:ok, rvm} <- version_manager() do
       case rvm do
         "asdf" ->
-          case System.cmd("asdf", ["current", plugin]) do
+          case Cmd.exec("asdf", ["current", plugin]) do
             {output, 0} ->
               output
-              |> String.split(" ", trim: true)
-              |> Enum.at(4)
+              |> asdf_current()
               |> Sugar.ok()
 
             {output, _} ->
@@ -20,7 +20,7 @@ defmodule Medic.Support.RuntimeVersionManager do
           end
 
         "mise" ->
-          case System.cmd("mise", ["current", plugin]) do
+          case Cmd.exec("mise", ["current", plugin]) do
             {output, 0} -> output |> String.trim() |> Sugar.ok()
             {output, _} -> {:error, output}
           end
@@ -53,5 +53,19 @@ defmodule Medic.Support.RuntimeVersionManager do
       nil -> {:error, "no runtime version manager was found"}
       rvm -> {:ok, rvm}
     end
+  end
+
+  # # #
+
+  defp asdf_current(output) do
+    versions =
+      case String.split(output, "\n") do
+        ["Name " <> _, versions | _] -> versions
+        [versions | _] -> versions
+      end
+
+    versions
+    |> String.split(" ", trim: true)
+    |> Enum.at(1)
   end
 end

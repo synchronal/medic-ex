@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Make asdf current check backwards compatible with asdf 0.15 and older.
+
 ## 2.0.0
 
 - **Breaking change:** Fix asdf check to support asdf 0.16+. When using asdf versions
