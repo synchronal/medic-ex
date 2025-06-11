@@ -26,7 +26,7 @@ defmodule Medic.Checks.Hex do
   """
   @spec local_rebar_installed?() :: Medic.Check.check_return_t()
   def local_rebar_installed? do
-    if File.exists?(rebar_path()),
+    if Enum.any?(rebar_paths(), &File.exists?/1),
       do: :ok,
       else: {:error, "local rebar not installed", "mix local.rebar --force"}
   end
@@ -95,17 +95,18 @@ defmodule Medic.Checks.Hex do
     end
   end
 
-  def rebar_path do
+  def rebar_paths do
     mix_home = mix_home()
 
     case System.version() |> Version.parse() do
       {:ok, %Version{major: 1, minor: minor}} when minor <= 13 ->
-        mix_home
-        |> Path.join("rebar")
+        [mix_home |> Path.join("rebar")]
 
       {:ok, %Version{major: major, minor: minor}} ->
-        mix_home
-        |> Path.join("elixir/#{major}-#{minor}/rebar3")
+        [
+          Path.join(mix_home, "elixir/#{major}-#{minor}/rebar3"),
+          Path.join(mix_home, "elixir/#{major}-#{minor}-otp-#{System.otp_release()}/rebar3")
+        ]
     end
   end
 
