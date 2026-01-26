@@ -18,6 +18,18 @@ defmodule GenMedic.MixProject do
   @scm_url "https://github.com/synchronal/medic-ex"
   @version "2.0.2"
 
+  def application do
+    [
+      extra_applications: [:eex, :logger]
+    ]
+  end
+
+  def cli do
+    [
+      preferred_envs: [credo: :test, dialyzer: :test]
+    ]
+  end
+
   def project do
     [
       app: :gen_medic,
@@ -27,18 +39,13 @@ defmodule GenMedic.MixProject do
       elixir: "~> 1.12",
       homepage_url: @scm_url,
       package: package(),
-      preferred_cli_env: [docs: :dev],
       source_url: @scm_url,
       start_permanent: Mix.env() == :prod,
       version: @version
     ]
   end
 
-  def application do
-    [
-      extra_applications: [:eex, :logger]
-    ]
-  end
+  # # #
 
   defp deps do
     [

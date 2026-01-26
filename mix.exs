@@ -19,6 +19,19 @@ defmodule Medic.MixProject do
   @scm_url "https://github.com/synchronal/medic-ex"
   @version "2.0.2"
 
+  def application do
+    [
+      extra_applications: [:logger],
+      mod: {Medic, []}
+    ]
+  end
+
+  def cli do
+    [
+      preferred_envs: [credo: :test, dialyzer: :test]
+    ]
+  end
+
   def project do
     [
       app: :medic,
@@ -31,22 +44,14 @@ defmodule Medic.MixProject do
       homepage_url: @scm_url,
       name: "Medic",
       package: package(),
-      preferred_cli_env: [credo: :test, dialyzer: :test],
       source_url: @scm_url,
       start_permanent: Mix.env() == :prod,
       version: @version
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
-  def application do
-    [
-      extra_applications: [:logger],
-      mod: {Medic, []}
-    ]
-  end
+  # # #
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
